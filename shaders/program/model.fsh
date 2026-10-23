@@ -32,9 +32,17 @@ layout(location = 0) out vec4 fragColor;
 void main() {
     mx_setup();
     vec4 color = texture(gtexture, v_TexCoord) * v_Color;
+#ifdef MX_PARTICLE
+    // Particles are blended, and some (mist, smoke) are faint all over and fade in and out by their alpha: cut
+    // off at the threshold below, a whole puff pops on and off as it crosses it. Only what is fully clear goes.
+    if (color.a < 0.004) {
+        discard;
+    }
+#else
     if (color.a < 0.1) {
         discard;
     }
+#endif
 #ifdef MX_ENTITY
     color.rgb = mix(color.rgb, entityColor.rgb, entityColor.a);
 #endif
