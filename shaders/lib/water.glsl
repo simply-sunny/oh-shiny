@@ -33,10 +33,11 @@ vec3 mx_project(vec3 view_point) {
 // that color (linear), a is how sure the hit is (0 for none; fades out near the edge of the screen, beyond which
 // nothing is known).
 vec4 mx_reflect_scene(vec3 origin, vec3 direction, float jitter) {
+    // Steps grow by half each time: sixteen reach about 400 blocks, as far as the screen shows anything.
     float stride = 0.3;
     vec3 previous = origin;
     vec3 point = origin + direction * stride * (0.5 + jitter);
-    for (int i = 0; i < 24; i++) {
+    for (int i = 0; i < 16; i++) {
         vec4 clip = gbufferProjection * vec4(point, 1.0);
         if (clip.w <= 0.0) {
             break;
@@ -54,7 +55,7 @@ vec4 mx_reflect_scene(vec3 origin, vec3 direction, float jitter) {
                 // Passed through a surface since the last step: halve the gap a few times to find where.
                 vec3 near_end = previous;
                 vec3 far_end = point;
-                for (int j = 0; j < 4; j++) {
+                for (int j = 0; j < 5; j++) {
                     vec3 middle = (near_end + far_end) * 0.5;
                     vec2 middle_uv = mx_project(middle).xy;
                     float middle_depth = textureLod(depthtex1, middle_uv, 0.0).r;
@@ -71,7 +72,7 @@ vec4 mx_reflect_scene(vec3 origin, vec3 direction, float jitter) {
             }
         }
         previous = point;
-        stride *= 1.28;
+        stride *= 1.5;
         point += direction * stride;
     }
     return vec4(0.0);

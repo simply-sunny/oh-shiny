@@ -54,14 +54,13 @@ COMPOSITES = [
     ("effects.fsh", "6,15", []),
     ("effects_blur.fsh", "7", []),
     ("effects_apply.fsh", "0", []),
-    # The glow: the picture at half size, four steps down, four steps back up, then a layer over the picture.
+    # The glow: the picture at half size, four steps down, four steps back up. final.fsh lays it over the picture.
     ("bloom_prefilter.fsh", "10", []),
     *[("bloom_downsample.fsh", str(11 + step),
        [f"uniform sampler2D colortex{10 + step};", f"#define MX_BLOOM_IN colortex{10 + step}"]) for step in range(4)],
     *[("bloom_upsample.fsh", str(13 - step),
        [f"uniform sampler2D colortex{14 - step};", f"uniform sampler2D colortex{13 - step};",
         f"#define MX_BLOOM_IN colortex{14 - step}", f"#define MX_BLOOM_OUT colortex{13 - step}"]) for step in range(4)],
-    ("bloom_composite.fsh", "0", []),
 ]
 STAGES.update({
     ("composite" if index == 0 else f"composite{index}"): ("fullscreen.vsh", program, [], targets, extra)
@@ -78,7 +77,6 @@ ONLY_WITH = {
     "bloom_prefilter.fsh": "BLOOM",
     "bloom_downsample.fsh": "BLOOM",
     "bloom_upsample.fsh": "BLOOM",
-    "bloom_composite.fsh": "BLOOM",
 }
 PROPERTIES_START = "# Passes skipped when their option is off. Written by tools/stages.py."
 PROPERTIES_END = "# End of passes skipped."

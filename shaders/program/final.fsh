@@ -1,11 +1,18 @@
 // The picture to the screen. With Smooth Edges on, the stair steps along edges are smoothed, only where
 // the depth says one thing ends and another begins, or a surface turns a corner: the texels of a block's own
-// texture are edges too, to the eye of a filter, and blending those would blur every block.
+// texture are edges too, to the eye of a filter, and blending those would blur every block. Then, with Bloom on,
+// the glow is laid over it (worked out by the bloom passes into colortex10). The glow is done here rather than
+// in a pass of its own, which would read and write the whole picture once more; it is soft enough that smoothing
+// the edges before it rather than after makes no difference to see.
 
 #include "/lib/frame.glsl"
+#include "/lib/color.glsl"
 
 uniform sampler2D colortex0;
 uniform sampler2D depthtex0;
+#ifdef BLOOM
+uniform sampler2D colortex10;
+#endif
 
 in vec2 texCoord;
 
@@ -70,11 +77,31 @@ vec3 smoothed(vec3 middle) {
     return reached < lowest || reached > highest ? near : wide;
 }
 
+#ifdef BLOOM
+// The blurred light, rolled off again the way bloom_prefilter.fsh undid it, laid over the picture as a thin
+// layer. Each pixel becomes mostly itself and a little of the light around it; where the picture is even that
+// changes nothing, next to something bright the brightness spills over.
+vec3 glow(vec3 color) {
+    if (MxBloom <= 0.0) {
+        return color;
+    }
+    // Five sizes were added together on the way up.
+    vec3 light = texture(colortex10, texCoord).rgb * 0.2;
+    float level = max(light.r, max(light.g, light.b));
+    vec3 shown = light * ((1.0 - exp(-level)) / max(level, 1.0e-4));
+    float share = 0.18 * MxBloom;
+    return mx_to_display(shown) * share + color * (1.0 - share);
+}
+#endif
+
 void main() {
     mx_setup();
     vec3 color = at(texCoord);
 #ifdef SMOOTH_EDGES
     color = smoothed(color);
+#endif
+#ifdef BLOOM
+    color = glow(color);
 #endif
     fragColor = vec4(color, 1.0);
 }

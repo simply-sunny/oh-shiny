@@ -78,13 +78,20 @@ float mx_shadow(vec3 position, vec3 normal) {
     // One pixel, one answer: a single lookup, rounded, so a pixel is either lit or in shadow.
     float lit = step(0.5, mx_shadow_tap(coord.xy, depth));
 #else
-    // Four smoothed lookups in a square give a soft edge about three texels wide, with no grain.
-    float reach = MxShadowTexel * 0.75;
-    float lit = mx_shadow_tap(coord.xy + vec2(-reach, -reach), depth)
-              + mx_shadow_tap(coord.xy + vec2(reach, -reach), depth)
-              + mx_shadow_tap(coord.xy + vec2(-reach, reach), depth)
-              + mx_shadow_tap(coord.xy + vec2(reach, reach), depth);
-    lit *= 0.25;
+    float lit;
+    if (distance_from_camera < range * 0.45) {
+        // Four smoothed lookups in a square give a soft edge about three texels wide, with no grain.
+        float reach = MxShadowTexel * 0.75;
+        lit = mx_shadow_tap(coord.xy + vec2(-reach, -reach), depth)
+            + mx_shadow_tap(coord.xy + vec2(reach, -reach), depth)
+            + mx_shadow_tap(coord.xy + vec2(-reach, reach), depth)
+            + mx_shadow_tap(coord.xy + vec2(reach, reach), depth);
+        lit *= 0.25;
+    } else {
+        // Further out a texel of the map covers more ground and a pixel of the screen less, so one smoothed
+        // lookup is already as soft as the four are near by.
+        lit = mx_shadow_tap(coord.xy, depth);
+    }
 #endif
 
     return mix(1.0, mix(lit, 1.0, beyond), strength);

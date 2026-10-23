@@ -1,6 +1,6 @@
 // The game's sky disc, sunset disc, stars and dark lower half. Where the pack draws the sky itself, the disc
-// draws it here, from the same function prepare.fsh uses: under Iris prepare.fsh fills the screen and the disc
-// covers the upper half again, seamlessly; under Leadlight what prepare.fsh writes is not what the sky passes
+// draws it here, from the same function prepare.fsh uses: under Iris prepare.fsh draws below the horizon and the
+// disc above it, meeting seamlessly; under Leadlight what prepare.fsh writes is not what the sky passes
 // draw onto, so the disc, which covers the whole screen there, is what shows. The sunset disc is dropped (the
 // pack's sky has its own dusk band), and so are the game's stars: the pack's sky has its own, which twinkle.
 

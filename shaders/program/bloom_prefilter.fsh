@@ -1,6 +1,6 @@
 // The first step of the glow: the picture at half size, with its light as bright as it was. The glow is a chain:
 // this, four steps down to 1/32 (bloom_downsample.fsh), four steps back up with each size added onto the one
-// above it (bloom_upsample.fsh), then a thin layer over the picture (bloom_composite.fsh). The blur that gives is
+// above it (bloom_upsample.fsh), then a thin layer over the picture (final.fsh). The blur that gives is
 // tight near a bright thing and wide further out.
 
 #include "/lib/frame.glsl"
