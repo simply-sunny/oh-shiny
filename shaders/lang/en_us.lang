@@ -1,5 +1,5 @@
 profile=Quality
-profile.comment=Low: short shadows, none from mobs, no reflections, no ambient occlusion. Medium: shadows, reflections and ambient occlusion. High: adds sun rays and longer shadows. Ultra: the sharpest, longest shadows.
+profile.comment=Quality. Low: short shadows, none from mobs, no reflections, no ambient occlusion. Medium: shadows, reflections and ambient occlusion. High: adds sun rays and longer shadows. Ultra: the sharpest, longest shadows.
 profile.LOW=Low
 profile.MEDIUM=Medium
 profile.HIGH=High

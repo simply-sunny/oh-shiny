@@ -6,13 +6,15 @@ through Metallum and [Leadlight](https://github.com/ohjey/leadlight).
 
 ## Features
 
-- Shadows from the sun and moon
+- Shadows from the sun and moon, soft or in whole pixels
 - Colored light: torches orange, soul fire blue, sea lanterns teal, amethyst purple
 - Water that reflects the world, with ripples and caustics
 - A sky with a sun glow, sunsets, stars and the Milky Way
 - Bloom, sun rays and ambient occlusion
 - Leaves, plants and water that move in the wind
 - Edge smoothing
+- Far-off terrain from [Distant Horizons](https://modrinth.com/mod/distanthorizons) and, on Iris,
+  [Voxy](https://modrinth.com/mod/voxy), lit and fogged like the rest
 
 ## Install
 
@@ -22,7 +24,10 @@ through Metallum and [Leadlight](https://github.com/ohjey/leadlight).
 
 ## Settings
 
-Pick a quality preset: Low, Medium, High or Ultra. Medium is the default.
+Pick a quality preset (Iris calls it Profile): Low, Medium, High or Ultra. Medium is the default.
+
+**Pixel Shadows** makes shadows fall in whole texture pixels, with blocky edges; **Shadow Pixels** sets how many
+fit across a block.
 
 Shadows cost the most. If the game runs slowly, turn off **Mob Shadows**, lower **Shadow Distance**, or turn
 off **Shadows**.
@@ -34,8 +39,8 @@ python3 tools/build.py    # writes the zip to dist/
 python3 tools/check.py    # compiles every stage (needs glslang)
 ```
 
-Stage files come from `tools/stages.py` and `block.properties` from `tools/blocks.py`. Edit those, not the
-generated files.
+Stage files (Distant Horizons' `dh_*` too) come from `tools/stages.py` and `block.properties` from
+`tools/blocks.py`. Edit those, not the generated files.
 
 ## License
 
