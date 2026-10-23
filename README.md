@@ -24,7 +24,8 @@ through Metallum and [Leadlight](https://github.com/ohjey/leadlight).
 
 Pick a quality preset: Low, Medium, High or Ultra. Medium is the default.
 
-Shadows cost the most. If the game runs slowly, lower **Shadow Distance**.
+Shadows cost the most. If the game runs slowly, turn off **Mob Shadows**, lower **Shadow Distance**, or turn
+off **Shadows**.
 
 ## Building
 

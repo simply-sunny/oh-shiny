@@ -13,8 +13,9 @@ void main() {
     float here = texelFetch(colortex15, pixel, 0).r;
     vec4 sum = vec4(0.0);
     float weights = 0.0;
-    for (int y = -2; y <= 2; y++) {
-        for (int x = -2; x <= 2; x++) {
+    // Every other texel over the same 5x5 square: nine reads instead of twenty-five.
+    for (int y = -2; y <= 2; y += 2) {
+        for (int x = -2; x <= 2; x += 2) {
             ivec2 at = clamp(pixel + ivec2(x, y), ivec2(0), size - 1);
             float there = texelFetch(colortex15, at, 0).r;
             float weight = exp(-abs(there - here) / (0.03 * here + 0.15)) * exp(-float(x * x + y * y) * 0.15);

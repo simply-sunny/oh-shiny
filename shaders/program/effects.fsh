@@ -35,7 +35,7 @@ float lit_at(vec3 position) {
     if (coord.x < 0.0 || coord.x > 1.0 || coord.y < 0.0 || coord.y > 1.0) {
         return 1.0;
     }
-    return step(coord.z - 0.2 * MX_SHADOW_DEPTH_PER_BLOCK, textureLod(shadowtex0, coord.xy, 0.0).r);
+    return mx_shadow_tap(coord.xy, coord.z - 0.2 * MX_SHADOW_DEPTH_PER_BLOCK);
 }
 
 // Light scattered towards the eye by the air along the line of sight, where the sun reaches it. Haze scatters
@@ -105,7 +105,7 @@ float occlusion(ivec2 texel, vec2 uv, vec3 position) {
     float turn = mx_dither(gl_FragCoord.xy) * 6.2831853;
     float blocked = 0.0;
     float counted = 0.0;
-    const int TAPS = 12;
+    const int TAPS = 8;
     for (int i = 0; i < TAPS; i++) {
         float angle = turn + float(i) * 2.3999632;
         float spread = sqrt((float(i) + 0.5) / float(TAPS));

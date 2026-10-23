@@ -67,6 +67,13 @@ void main() {
     }
 #endif
 
+#ifndef SHADOWS
+    // Only the map of light colors is wanted: everything else is put outside the map, where it is not drawn.
+    gl_Position = vec4(0.0, 0.0, -2.0, 1.0);
+    v_Clip = vec2(0.0);
+    return;
+#endif
+
     // Moved by the wind like the terrain itself.
     bool top = gl_MultiTexCoord0.t < mc_midTexCoord.t;
     position = mx_wave(position, v_Type, top);

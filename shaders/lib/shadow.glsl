@@ -4,7 +4,8 @@
 
 #include "/lib/frame.glsl"
 
-uniform sampler2D shadowtex0;
+// Read with the depth comparison done by the hardware (shadowHardwareFiltering, settings.glsl).
+uniform sampler2DShadow shadowtex0;
 
 // The shadow map is drawn fish-eyed: stretched near the middle (around the player) and squeezed towards the edge,
 // so shadows are sharp close up without a bigger map. Drawing and reading bend coordinates the same way.
@@ -26,21 +27,11 @@ vec3 mx_shadow_coord(vec3 position) {
 }
 
 // One smoothed lookup: the four texels around `uv` are each compared with `depth`, and the four yes-or-no
-// answers are blended by how close `uv` is to each. Blending the answers, not the depths, is what makes a shadow
-// edge slide smoothly across the map's texels as the sun turns, where a plain lookup would make it flicker from
-// one texel to the next.
+// answers are blended by how close `uv` is to each, by the hardware. Blending the answers, not the depths, is
+// what makes a shadow edge slide smoothly across the map's texels as the sun turns, where a plain lookup would
+// make it flicker from one texel to the next.
 float mx_shadow_tap(vec2 uv, float depth) {
-    ivec2 size = textureSize(shadowtex0, 0);
-    vec2 position = uv * vec2(size) - 0.5;
-    ivec2 corner = ivec2(floor(position));
-    vec2 blend = position - vec2(corner);
-    ivec2 last = size - 1;
-    // Lit where what the map holds is no nearer the light than the point.
-    float a = step(depth, texelFetch(shadowtex0, clamp(corner, ivec2(0), last), 0).r);
-    float b = step(depth, texelFetch(shadowtex0, clamp(corner + ivec2(1, 0), ivec2(0), last), 0).r);
-    float c = step(depth, texelFetch(shadowtex0, clamp(corner + ivec2(0, 1), ivec2(0), last), 0).r);
-    float d = step(depth, texelFetch(shadowtex0, clamp(corner + ivec2(1, 1), ivec2(0), last), 0).r);
-    return mix(mix(a, b, blend.x), mix(c, d, blend.x), blend.y);
+    return texture(shadowtex0, vec3(uv, depth));
 }
 
 // How much of the sun's or moon's light reaches a point: 1 fully lit, 0 fully shadowed.

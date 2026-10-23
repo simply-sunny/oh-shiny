@@ -63,6 +63,21 @@ STAGES.update({
     for index, (program, targets, extra) in enumerate(COMPOSITES)
 })
 
+# Passes that only matter with an option on: Iris skips them otherwise, and each one skipped is a whole screen
+# not read and written. By fragment program; written into shaders.properties as program.<stage>.enabled.
+ONLY_WITH = {
+    "deferred.fsh": "WATER_REFLECTIONS",
+    "effects.fsh": "AMBIENT_OCCLUSION || SUN_RAYS",
+    "effects_blur.fsh": "AMBIENT_OCCLUSION || SUN_RAYS",
+    "effects_apply.fsh": "AMBIENT_OCCLUSION || SUN_RAYS",
+    "bloom_prefilter.fsh": "BLOOM",
+    "bloom_downsample.fsh": "BLOOM",
+    "bloom_upsample.fsh": "BLOOM",
+    "bloom_composite.fsh": "BLOOM",
+}
+PROPERTIES_START = "# Passes skipped when their option is off. Written by tools/stages.py."
+PROPERTIES_END = "# End of passes skipped."
+
 
 def stage_file(program, defines, targets, extra):
     lines = ["#version 330 compatibility", "", '#include "/lib/settings.glsl"']
@@ -80,6 +95,18 @@ def main():
     for name, (vertex, fragment, defines, targets, extra) in STAGES.items():
         (SHADERS / f"{name}.vsh").write_text(stage_file(vertex, defines, None, []))
         (SHADERS / f"{name}.fsh").write_text(stage_file(fragment, defines, targets, extra))
+    lines = [PROPERTIES_START]
+    lines += [f"program.{name}.enabled={ONLY_WITH[fragment]}"
+              for name, (_, fragment, _, _, _) in STAGES.items() if fragment in ONLY_WITH]
+    lines.append(PROPERTIES_END)
+    properties = (SHADERS / "shaders.properties").read_text()
+    if PROPERTIES_START in properties:
+        start = properties.index(PROPERTIES_START)
+        end = properties.index(PROPERTIES_END) + len(PROPERTIES_END)
+        properties = properties[:start] + "\n".join(lines) + properties[end:]
+    else:
+        properties = properties.rstrip("\n") + "\n\n" + "\n".join(lines) + "\n"
+    (SHADERS / "shaders.properties").write_text(properties)
     print(f"wrote {len(STAGES)} stages")
 
 
