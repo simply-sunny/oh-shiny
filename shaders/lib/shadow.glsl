@@ -34,11 +34,30 @@ float mx_shadow_tap(vec2 uv, float depth) {
     return texture(shadowtex0, vec3(uv, depth));
 }
 
+#ifdef PIXEL_SHADOWS
+// Pixel Shadows: the point is moved to the middle of the texture pixel it lies in, so that every point of a pixel
+// is shadowed alike and shadow edges step from pixel to pixel. Pixels are counted from the block grid, in the
+// world (MxCameraPos is the camera's position, wrapped every 4096 blocks, a whole number of pixels). The point
+// is first nudged half a pixel into its surface: on the surface it lies on the line between two pixels.
+vec3 mx_pixel_lock(vec3 position, vec3 normal) {
+    const float SIZE = float(PIXEL_SHADOWS_SIZE);
+    vec3 inward = normal * (0.5 / SIZE);
+    vec3 world = position + MxCameraPos.xyz - inward;
+    world = (floor(world * SIZE) + 0.5) / SIZE;
+    // Back out of the surface along the normal only, so the point stays on it.
+    vec3 locked = world - MxCameraPos.xyz + inward;
+    return locked + normal * dot(position - locked, normal);
+}
+#endif
+
 // How much of the sun's or moon's light reaches a point: 1 fully lit, 0 fully shadowed.
 // `position` is relative to the eye; `normal` is the surface normal there.
 float mx_shadow(vec3 position, vec3 normal) {
     float strength = MxLightDir.w;
     if (strength <= 0.0) return 1.0;
+#ifdef PIXEL_SHADOWS
+    position = mx_pixel_lock(position, normal);
+#endif
 
     float range = MxShadowRange;
     float distance_from_camera = length(position);
@@ -55,6 +74,10 @@ float mx_shadow(vec3 position, vec3 normal) {
     vec3 coord = mx_shadow_coord(lifted);
     float depth = coord.z - 0.15 * MX_SHADOW_DEPTH_PER_BLOCK;
 
+#ifdef PIXEL_SHADOWS
+    // One pixel, one answer: a single lookup, rounded, so a pixel is either lit or in shadow.
+    float lit = step(0.5, mx_shadow_tap(coord.xy, depth));
+#else
     // Four smoothed lookups in a square give a soft edge about three texels wide, with no grain.
     float reach = MxShadowTexel * 0.75;
     float lit = mx_shadow_tap(coord.xy + vec2(-reach, -reach), depth)
@@ -62,6 +85,7 @@ float mx_shadow(vec3 position, vec3 normal) {
               + mx_shadow_tap(coord.xy + vec2(-reach, reach), depth)
               + mx_shadow_tap(coord.xy + vec2(reach, reach), depth);
     lit *= 0.25;
+#endif
 
     return mix(1.0, mix(lit, 1.0, beyond), strength);
 }

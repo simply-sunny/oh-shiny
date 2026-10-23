@@ -6,6 +6,8 @@
 // Lighting
 #define SHADOWS // The sun and moon cast shadows.
 #define MOB_SHADOWS // Mobs, players and block entities cast shadows too.
+//#define PIXEL_SHADOWS // Shadows fall in whole texture pixels, with blocky edges.
+#define PIXEL_SHADOWS_SIZE 16 // How many shadow pixels across a block: 16 matches the game's textures. [4 8 16 32 64]
 #define COLORED_LIGHT // Torches glow orange, soul fire blue, sea lanterns teal, and so on.
 #define AMBIENT_OCCLUSION // Corners and crevices are a little darker.
 //#define SUN_RAYS // Shafts of sunlight through trees, openings and haze, in the air itself.
