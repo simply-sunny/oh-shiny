@@ -4,6 +4,7 @@
 #include "/lib/color.glsl"
 #include "/lib/sky.glsl"
 #include "/lib/fog.glsl"
+#include "/lib/lod.glsl"
 
 in vec4 v_Color;
 in vec3 v_Position;
@@ -13,6 +14,14 @@ layout(location = 0) out vec4 fragColor;
 void main() {
     mx_setup();
     float distance_to = length(v_Position);
+#ifdef MX_LOD
+    // Far-off terrain from Distant Horizons or Voxy is not in the game's depth, so clouds behind a far mountain
+    // would be drawn over it.
+    float terrain = mx_lod_distance(gl_FragCoord.xy * MxScreen.zw);
+    if (terrain > 0.0 && terrain < distance_to) {
+        discard;
+    }
+#endif
     // Thinned out towards where the game stops drawing them.
     float thin = smoothstep(0.6, 1.0, distance_to / max(far * 4.0, 256.0));
     if (MxSkyHorizon.w > 0.5) {

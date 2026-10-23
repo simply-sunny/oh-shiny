@@ -1,6 +1,8 @@
-// What Iris hands every program. Unused ones cost nothing.
+// What Iris hands every program. Unused ones cost nothing. Inside Voxy's shaders Voxy declares them itself,
+// from the list in voxy.json, which must name every one of them.
 #ifndef MX_UNIFORMS
 #define MX_UNIFORMS
+#ifndef MX_VOXY_PATCH
 
 uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
@@ -35,4 +37,5 @@ uniform ivec2 eyeBrightnessSmooth;
 uniform bool hasSkylight;
 uniform bool hasCeiling;
 
+#endif
 #endif

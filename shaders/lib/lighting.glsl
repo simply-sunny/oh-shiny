@@ -32,7 +32,9 @@ float mx_caustic(vec2 world, float time) {
 // Warm torchlight unless the map of light sources says the light nearby comes from something else.
 vec3 mx_block_light_color(vec3 position) {
     vec3 warm = vec3(1.0, 0.46, 0.15);
-#ifdef COLORED_LIGHT
+    // Far-off terrain (lod_shading.glsl) is lit without the map of light colors: it only covers the ground around
+    // the player.
+#if defined COLORED_LIGHT && !defined MX_LOD_PASS
     vec4 nearby = mx_light_color_at(position);
     // The palette's colors are display colors at full brightness; scaled to the warm light's brightness.
     vec3 tint = nearby.rgb * (mx_luminance(warm) / max(mx_luminance(nearby.rgb), 1.0e-3));

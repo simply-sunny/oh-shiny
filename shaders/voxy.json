@@ -1,0 +1,43 @@
+{
+    "version": 1,
+    "excludeLodsFromVanillaDepth": true,
+    "opaqueDrawBuffers": [0],
+    "translucentDrawBuffers": [0],
+    "blending": {
+        "0": "SRC_ALPHA ONE_MINUS_SRC_ALPHA ONE ONE_MINUS_SRC_ALPHA"
+    },
+    "uniforms": [
+        "gbufferModelView",
+        "gbufferModelViewInverse",
+        "gbufferProjection",
+        "gbufferProjectionInverse",
+        "shadowModelView",
+        "shadowModelViewInverse",
+        "shadowProjection",
+        "sunPosition",
+        "moonPosition",
+        "cameraPosition",
+        "skyColor",
+        "fogColor",
+        "rainStrength",
+        "frameTimeCounter",
+        "viewWidth",
+        "viewHeight",
+        "far",
+        "fogStart",
+        "fogEnd",
+        "nightVision",
+        "darknessFactor",
+        "blindness",
+        "screenBrightness",
+        "ambientLight",
+        "isEyeInWater",
+        "renderStage",
+        "eyeBrightnessSmooth",
+        "hasSkylight",
+        "hasCeiling",
+        "vxProjInv",
+        "vxModelViewInv",
+        "vxRenderDistance"
+    ]
+}

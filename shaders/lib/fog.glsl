@@ -5,6 +5,7 @@
 #include "/lib/frame.glsl"
 #include "/lib/color.glsl"
 #include "/lib/sky.glsl"
+#include "/lib/lod.glsl"
 
 float mx_fog_ramp(float distance, float start, float end) {
     if (end <= start) return 0.0;
@@ -13,11 +14,19 @@ float mx_fog_ramp(float distance, float start, float end) {
 
 // The game's two fogs together: the one of the surroundings (rain, water, lava; Iris's fogStart and fogEnd) by
 // straight-line distance, and the one that hides the edge of the loaded world by distance along the ground.
+// With Distant Horizons or Voxy the world goes on past the game's own edge, so that fog moves out to theirs.
 float mx_fog_amount(vec3 position) {
     float flat_distance = max(length(position.xz), abs(position.y));
-    float edge_start = far - clamp(far * 0.1, 4.0, 64.0);
-    return max(mx_fog_ramp(length(position), fogStart, fogEnd),
-               mx_fog_ramp(flat_distance, edge_start, far));
+    float edge = mx_view_far();
+    float edge_start = edge - clamp(edge * 0.1, 4.0, 64.0);
+#ifdef MX_LOD
+    // The game's fog of the surroundings is pushed to its own render distance, which would fog the near world
+    // over in front of the far-off one: it is kept only where it is the weather's or the water's.
+    float surroundings = MxSkyHorizon.w > 0.5 || MxSkyAmbient.w > 0.01 ? mx_fog_ramp(length(position), fogStart, fogEnd) : 0.0;
+#else
+    float surroundings = mx_fog_ramp(length(position), fogStart, fogEnd);
+#endif
+    return max(surroundings, mx_fog_ramp(flat_distance, edge_start, edge));
 }
 
 // Under the open sky: the game's fog together with a thin haze that thickens with distance and rain.

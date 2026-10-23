@@ -38,6 +38,11 @@ STAGES = {
     "gbuffers_water": ("terrain.vsh", "terrain.fsh", ["MX_TRANSLUCENT"], "0", []),
     "gbuffers_weather": ("plain.vsh", "plain.fsh", ["MX_TEXTURED", "MX_LIGHTMAP"], "0", []),
 
+    # Distant Horizons' far-off terrain and water, drawn before the game's own (Iris only). Voxy's is drawn by
+    # Voxy itself, from voxy.json.
+    "dh_terrain": ("lod.vsh", "lod.fsh", [], "0", []),
+    "dh_water": ("lod.vsh", "lod.fsh", ["MX_TRANSLUCENT"], "0", []),
+
     # The composite passes are listed in order below (COMPOSITES) and numbered from there.
     "final": ("fullscreen.vsh", "final.fsh", [], None, []),
 }
