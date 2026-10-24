@@ -33,6 +33,11 @@ uniform float ambientLight;
 
 uniform int isEyeInWater;
 uniform int renderStage;
+// What is held in the main hand and the other: its id from item.properties, and the light it would give placed.
+uniform int heldItemId;
+uniform int heldItemId2;
+uniform int heldBlockLightValue;
+uniform int heldBlockLightValue2;
 uniform ivec2 eyeBrightnessSmooth;
 uniform bool hasSkylight;
 uniform bool hasCeiling;

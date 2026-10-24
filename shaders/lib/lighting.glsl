@@ -28,21 +28,53 @@ float mx_caustic(vec2 world, float time) {
     return 0.55 + 1.9 * lines;
 }
 
+// Torchlight, the color of block light unless something says otherwise, as linear light at full strength.
+const vec3 MX_WARM_LIGHT = vec3(1.0, 0.46, 0.15);
+
+// A light's linear color, as bright as torchlight.
+vec3 mx_light_tint(vec3 linear) {
+    return linear * (mx_luminance(MX_WARM_LIGHT) / max(mx_luminance(linear), 1.0e-3));
+}
+
 // The color of the block light reaching `position` (relative to the eye), as linear light at full strength.
 // Warm torchlight unless the map of light sources says the light nearby comes from something else.
 vec3 mx_block_light_color(vec3 position) {
-    vec3 warm = vec3(1.0, 0.46, 0.15);
     // Far-off terrain (lod_shading.glsl) is lit without the map of light colors: it only covers the ground around
     // the player.
 #if defined COLORED_LIGHT && !defined MX_LOD_PASS
     vec4 nearby = mx_light_color_at(position);
-    // The palette's colors are display colors at full brightness; scaled to the warm light's brightness.
-    vec3 tint = nearby.rgb * (mx_luminance(warm) / max(mx_luminance(nearby.rgb), 1.0e-3));
-    return mix(warm, tint, clamp(nearby.a, 0.0, 1.0));
+    return mix(MX_WARM_LIGHT, mx_light_tint(nearby.rgb), clamp(nearby.a, 0.0, 1.0));
 #else
-    return warm;
+    return MX_WARM_LIGHT;
 #endif
 }
+
+#if defined HAND_LIGHT && !defined MX_LOD_PASS
+// The color of a light held in the hand: item.properties gives light-giving items the ids block.properties gives
+// the blocks, 10100 + their place in mx_light_palette.
+vec3 mx_held_light_color(int item) {
+#ifdef COLORED_LIGHT
+    int index = item - 10100;
+    if (index >= 1 && index <= 8) {
+        return mx_light_tint(mx_linear(mx_light_palette(index)));
+    }
+#endif
+    return MX_WARM_LIGHT;
+}
+
+// Light from what the player holds in either hand. Iris says how bright it would be placed (0..15); it reaches
+// out from the player a level less each block, as the game's own light does, through walls too, as the game
+// cannot say where they are. rgb: its color, as mx_block_light_color. a: its level at `position`, 0..1.
+vec4 mx_hand_light(vec3 position) {
+    float reach = length(position);
+    float main_hand = clamp((float(heldBlockLightValue) - reach) / 15.0, 0.0, 1.0);
+    float off_hand = clamp((float(heldBlockLightValue2) - reach) / 15.0, 0.0, 1.0);
+    if (main_hand >= off_hand) {
+        return vec4(mx_held_light_color(heldItemId), main_hand);
+    }
+    return vec4(mx_held_light_color(heldItemId2), off_hand);
+}
+#endif
 
 // `albedo`: linear surface color. `normal`: world orientation. `position`: relative to the eye. `light`: block
 // light and sky light, each 0..1. `facing`: from mx_facing. `shadow`: 1 where the sun or moon reaches, 0 where
@@ -53,6 +85,15 @@ vec3 mx_lit(vec3 albedo, vec3 normal, vec3 position, vec2 light, float facing, f
     float sky = mix(mx_light_curve(light.y), light.y * light.y, 0.5);
     float block_level = light.x;
     vec3 block_color = mx_block_light_color(position);
+#if defined HAND_LIGHT && !defined MX_LOD_PASS
+    // Where a held light and the world's both reach, the stronger sets how bright it is, and their colors mix
+    // by how strong each is.
+    vec4 hand = mx_hand_light(position);
+    if (hand.a > 0.0) {
+        block_color = (block_color * block_level + hand.rgb * hand.a) / (block_level + hand.a);
+        block_level = max(block_level, hand.a);
+    }
+#endif
     float block = mx_light_curve(block_level);
 
     // Direct light. Where no sky light reaches at all (deep caves) there is none, whatever the shadow map says:

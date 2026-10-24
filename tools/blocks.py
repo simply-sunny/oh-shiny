@@ -1,4 +1,5 @@
-"""Writes shaders/block.properties: which kind of block each is, as far as the shaders care.
+"""Writes shaders/block.properties: which kind of block each is, as far as the shaders care; and
+shaders/item.properties, which gives light-giving items held in the hand the ids of their blocks.
 
 The ids must agree with shaders/lib/block_ids.glsl: blocks 10000 + their kind, blocks that give off light
 10100 + the color of their light (the palette in shaders/lib/light_colors.glsl). Edit the lists below and run
@@ -66,6 +67,9 @@ def metal():
                    f"{age}copper_door", f"{age}copper_trapdoor"]
     return blocks
 
+
+# Light-giving things held in the hand that are not blocks, by the color of their light.
+HELD_LIGHTS = {1: ["lava_bucket"]}
 
 # 10100 + the place of their light's color in mx_light_palette (light_colors.glsl).
 LIGHTS = {
@@ -137,7 +141,18 @@ block.10007={wrap(metal())}
     for index, (comment, blocks) in LIGHTS.items():
         text += f"\n# {comment}\nblock.{10100 + index}={wrap(blocks)}\n"
     (SHADERS / "block.properties").write_text(text)
-    print("wrote block.properties")
+
+    # Items share their blocks' names, without the block's state; wall torches and the like are no items, and
+    # Iris skips names it does not know.
+    items = """# oh shiny! item ids. Written by tools/blocks.py; edit that and run it again. A light held in the hand
+# (lib/lighting.glsl) has the id of its block in block.properties, 10100 + the color of its light.
+"""
+    for index, (comment, blocks) in LIGHTS.items():
+        names = list(dict.fromkeys(block.split(":")[0] for block in blocks if "wall_" not in block))
+        names += HELD_LIGHTS.get(index, [])
+        items += f"\n# {comment}\nitem.{10100 + index}={wrap(names)}\n"
+    (SHADERS / "item.properties").write_text(items)
+    print("wrote block.properties and item.properties")
 
 
 if __name__ == "__main__":

@@ -25,6 +25,7 @@ VARIANTS = {
     "everything on": [("//#define SUN_RAYS", "#define SUN_RAYS"), PIXEL_SHADOWS, ("#define FOG_START 0", "#define FOG_START 50")],
     "everything off": [
         ("#define SHADOWS", "//#define SHADOWS"), ("#define COLORED_LIGHT", "//#define COLORED_LIGHT"),
+        ("#define HAND_LIGHT", "//#define HAND_LIGHT"),
         ("#define AMBIENT_OCCLUSION", "//#define AMBIENT_OCCLUSION"), ("#define WATER_REFLECTIONS", "//#define WATER_REFLECTIONS"),
         ("#define WAVING", "//#define WAVING"), ("#define BLOOM", "//#define BLOOM"), ("#define SMOOTH_EDGES", "//#define SMOOTH_EDGES"),
     ],

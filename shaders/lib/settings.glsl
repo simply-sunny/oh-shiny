@@ -9,6 +9,7 @@
 //#define PIXEL_SHADOWS // Shadows fall in whole texture pixels, with blocky edges.
 #define PIXEL_SHADOWS_SIZE 16 // How many shadow pixels across a block: 16 matches the game's textures. [4 8 16 32 64]
 #define COLORED_LIGHT // Torches glow orange, soul fire blue, sea lanterns teal, and so on.
+#define HAND_LIGHT // A torch or other light held in the hand lights up what is around the player.
 #define AMBIENT_OCCLUSION // Corners and crevices are a little darker.
 //#define SUN_RAYS // Shafts of sunlight through trees, openings and haze, in the air itself.
 

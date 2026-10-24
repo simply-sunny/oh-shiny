@@ -8,6 +8,7 @@ through Metallum and [Leadlight](https://github.com/ohjey/leadlight).
 
 - Shadows from the sun and moon, soft or in whole pixels
 - Colored light: torches orange, soul fire blue, sea lanterns teal, amethyst purple
+- Light from a torch or lantern held in your hand
 - Water that reflects the world, with ripples and caustics
 - A sky with a sun glow, sunsets, stars and the Milky Way
 - Bloom, sun rays and ambient occlusion
