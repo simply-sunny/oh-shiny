@@ -6,7 +6,7 @@
 #include "/lib/waving.glsl"
 
 in vec4 mc_Entity;
-in vec2 mc_midTexCoord;
+in vec4 at_midBlock;
 
 out vec4 v_Color;
 out vec2 v_TexCoord;
@@ -26,8 +26,7 @@ void main() {
     // Relative to the eye, in world orientation: the view matrix only turns it to face where the camera looks.
     vec3 view = (gl_ModelViewMatrix * gl_Vertex).xyz;
     vec3 position = mat3(gbufferModelViewInverse) * view;
-    bool top = gl_MultiTexCoord0.t < mc_midTexCoord.t;
-    vec3 waved = mx_wave(position, v_Type, top);
+    vec3 waved = mx_wave(position, v_Type, mx_height_in_block(at_midBlock));
     view += mat3(gbufferModelView) * (waved - position);
     gl_Position = gl_ProjectionMatrix * vec4(view, 1.0);
 

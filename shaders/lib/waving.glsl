@@ -12,9 +12,16 @@ float mx_water_height(vec2 world, float time) {
          + sin(world.x * 3.13 + world.y * 2.29 - time * 2.61) * 0.2;
 }
 
-// `position` is relative to the eye, in world orientation. `is_top` says whether the vertex is at the top of its
-// quad's texture, which for a plant is the tip of the plant.
-vec3 mx_wave(vec3 position, int type, bool is_top) {
+// How high a vertex is in its block, 0 at the bottom and 1 at the top, from Iris's at_midBlock (the way to the
+// block's middle, in 64ths of a block). A plant bends by it, the more the higher, so every part of it moves
+// together: the game's crossed plants, and the 3D plants of resource packs (Mikey Jeo's and the like), whose
+// many small faces would each bend on their own if the bend went by their textures instead.
+float mx_height_in_block(vec4 mid_block) {
+    return 0.5 - mid_block.y / 64.0;
+}
+
+// `position` is relative to the eye, in world orientation. `height`: from mx_height_in_block.
+vec3 mx_wave(vec3 position, int type, float height) {
     if (!MxWaving || type == 0 || type >= MX_BLOCK_GLOWING) {
         return position;
     }
@@ -38,13 +45,12 @@ vec3 mx_wave(vec3 position, int type, bool is_top) {
         float amount;
         if (type == MX_BLOCK_LEAVES) {
             amount = 0.015;
-        } else if (type == MX_BLOCK_PLANT) {
-            amount = is_top ? 0.07 : 0.0;
-        } else if (type == MX_BLOCK_PLANT_LOWER) {
-            amount = is_top ? 0.07 : 0.0;
+        } else if (type == MX_BLOCK_PLANT || type == MX_BLOCK_PLANT_LOWER) {
+            // Rooted at the bottom; some models reach a little below it.
+            amount = 0.07 * max(height, 0.0);
         } else {
             // The upper half's bottom meets the lower half's top.
-            amount = is_top ? 0.12 : 0.07;
+            amount = 0.07 + 0.05 * height;
         }
         position.x += (sway + 0.25 * flutter) * amount * wind;
         position.z += (sway * 0.6 - 0.25 * flutter) * amount * wind;

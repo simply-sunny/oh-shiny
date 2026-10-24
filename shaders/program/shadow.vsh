@@ -75,8 +75,7 @@ void main() {
 #endif
 
     // Moved by the wind like the terrain itself.
-    bool top = gl_MultiTexCoord0.t < mc_midTexCoord.t;
-    position = mx_wave(position, v_Type, top);
+    position = mx_wave(position, v_Type, mx_height_in_block(at_midBlock));
 
     vec4 clip = shadowProjection * (shadowModelView * vec4(position + mx_feet_offset(), 1.0));
     clip.xy = mx_shadow_bend(clip.xy);
