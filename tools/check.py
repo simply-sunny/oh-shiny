@@ -22,7 +22,7 @@ PIXEL_SHADOWS = ("//#define PIXEL_SHADOWS", "#define PIXEL_SHADOWS")
 VARIANTS = {
     "default": [],
     "pixel shadows": [PIXEL_SHADOWS, ("#define PIXEL_SHADOWS_SIZE 16", "#define PIXEL_SHADOWS_SIZE 8")],
-    "everything on": [("//#define SUN_RAYS", "#define SUN_RAYS"), PIXEL_SHADOWS],
+    "everything on": [("//#define SUN_RAYS", "#define SUN_RAYS"), PIXEL_SHADOWS, ("#define FOG_START 0", "#define FOG_START 50")],
     "everything off": [
         ("#define SHADOWS", "//#define SHADOWS"), ("#define COLORED_LIGHT", "//#define COLORED_LIGHT"),
         ("#define AMBIENT_OCCLUSION", "//#define AMBIENT_OCCLUSION"), ("#define WATER_REFLECTIONS", "//#define WATER_REFLECTIONS"),
