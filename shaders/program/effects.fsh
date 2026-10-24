@@ -3,6 +3,7 @@
 #include "/lib/frame.glsl"
 #include "/lib/noise.glsl"
 #include "/lib/shadow.glsl"
+#include "/lib/fog.glsl"
 
 uniform sampler2D depthtex0;
 
@@ -90,6 +91,14 @@ vec3 surface_normal(ivec2 texel, vec3 position) {
 float occlusion(ivec2 texel, vec2 uv, vec3 position) {
     // Corners far away are smaller than a pixel, and what is far is under fog, which shade must not darken.
     float near = 1.0 - smoothstep(48.0, 112.0, -position.z);
+    // Nor what is near but fogged over: in lava or deep water everything a few blocks off is the fog's flat
+    // color, and shade there showed as dark smudges, around the block outline most of all.
+    vec3 from_eye = mat3(gbufferModelViewInverse) * position;
+    float fog = mx_fog_amount(from_eye);
+    if (MxSkyHorizon.w < 0.5) {
+        fog = mx_fog_total(from_eye, fog);
+    }
+    near *= 1.0 - fog;
     if (!MxAmbientOcclusion || near <= 0.0) {
         return 1.0;
     }

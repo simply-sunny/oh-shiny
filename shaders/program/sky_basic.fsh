@@ -18,8 +18,17 @@ layout(location = 0) out vec4 fragColor;
 
 void main() {
     mx_setup();
-    // Where the pack does not draw the sky (under water, the Nether, blindness) the game's is kept whole.
+    // Where the pack does not draw the sky (under water, the Nether, blindness) the game's is kept. In water,
+    // lava, powder snow or blindness the game fogs its sky over entirely, and its dark lower half too, which
+    // otherwise showed black below the horizon: there it is the fog's color, with no stars or sunset.
     if (MxSkyHorizon.w > 0.5) {
+        if (isEyeInWater != 0 || blindness > 0.01 || darknessFactor > 0.01) {
+            if (renderStage == MC_RENDER_STAGE_SUNSET || renderStage == MC_RENDER_STAGE_STARS) {
+                discard;
+            }
+            fragColor = vec4(fogColor, 1.0);
+            return;
+        }
         fragColor = v_Color;
         return;
     }
