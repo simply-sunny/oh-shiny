@@ -18,21 +18,11 @@ vec2 mx_shadow_bend(vec2 clip) {
     return clip / (length(clip) * MX_SHADOW_BEND + (1.0 - MX_SHADOW_BEND));
 }
 
-// The bend is centred on a point fixed in the world near the player, which moves on only once the player is this
-// many blocks away, not on the player. Centred on the player, the map's texels slid over the ground with every
-// step, and shadow edges crawled as the player moved; now they stay put, and only settle a little differently
-// when the centre moves on. Shorter steps for shorter shadow distances, where the steps cost more of the map.
-const float MX_SHADOW_STEP = clamp(exp2(floor(log2(shadowDistance / 16.0))), 2.0, 8.0);
-// The map is drawn a little smaller, so that with its centre off to one side its far side still fits.
-const float MX_SHADOW_FIT = shadowDistance / (shadowDistance + MX_SHADOW_STEP * 1.75);
-
 // Where a point (relative to the eye) is drawn into the shadow map, in clip space. Drawing (shadow.vsh) and
-// reading (mx_shadow_coord) both go through here.
+// reading (mx_shadow_coord) both go through here. The map, and its bend, are centred exactly on the player.
 vec4 mx_shadow_clip(vec3 position) {
-    vec3 centre = floor(MxCameraPos.xyz / MX_SHADOW_STEP) * MX_SHADOW_STEP - MxCameraPos.xyz;
     vec4 clip = shadowProjection * (shadowModelView * vec4(position + mx_feet_offset(), 1.0));
-    vec4 centre_clip = shadowProjection * (shadowModelView * vec4(centre + mx_feet_offset(), 1.0));
-    clip.xy = mx_shadow_bend((clip.xy - centre_clip.xy) * MX_SHADOW_FIT);
+    clip.xy = mx_shadow_bend(clip.xy);
     return clip;
 }
 
@@ -84,7 +74,7 @@ float mx_shadow(vec3 position, vec3 normal) {
     // Look the point up a little way off the surface, or the surface shadows itself in stripes. A texel covers
     // more ground further from the player and when the light grazes the surface, so step further off there.
     float squeeze = (distance_from_camera / range) * MX_SHADOW_BEND + (1.0 - MX_SHADOW_BEND);
-    float texel_size = 2.0 * range * MxShadowTexel * squeeze / MX_SHADOW_FIT;
+    float texel_size = 2.0 * range * MxShadowTexel * squeeze;
     vec3 lifted = position + normal * texel_size * (1.5 + 2.5 * (1.0 - facing));
 
     vec3 coord = mx_shadow_coord(lifted);

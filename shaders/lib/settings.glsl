@@ -41,8 +41,8 @@ const float shadowDistance = 48.0;
 // 0 keeps the game's own sun, straight overhead at noon. Tilted, shadows stay long all day.
 const float sunPathRotation = 0.0; // [-60.0 -50.0 -40.0 -35.0 -30.0 -20.0 -10.0 0.0 10.0 20.0 30.0 35.0 40.0 50.0 60.0]
 
-// Iris keeps the shadow map centred exactly on the player. The pack centres the fish-eye bend on a point fixed in
-// the world instead (see shadow.glsl), which is what keeps shadows still as the player moves.
+// The shadow map is centered exactly on the player, where its fish-eye bend is centered (see shadow.glsl).
+// Moving it in whole texels, as Iris does by default, makes a bent map shake instead.
 const float shadowIntervalSize = 0.0;
 const bool shadowHardwareFiltering = true;
 const float shadowDistanceRenderMul = 1.0;
