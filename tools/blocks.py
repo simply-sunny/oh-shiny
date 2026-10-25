@@ -75,7 +75,7 @@ HELD_LIGHTS = {1: ["lava_bucket"]}
 LIGHTS = {
     0: ("Torches, lanterns, glowstone: warm",
         ["torch", "wall_torch", "lantern", "glowstone", "shroomlight", "jack_o_lantern", "glow_lichen",
-         "candle:lit=true", "sea_pickle", "cave_vines:berries=true", "cave_vines_plant:berries=true", "light",
+         "candle:lit=true", "sea_pickle", "light",
          "brewing_stand", "creaking_heart:creaking_heart_state=awake", "trial_spawner", "vault"]
         + [f"{color}_candle:lit=true" for color in COLORS] + [f"{age}copper_bulb:lit=true" for age in COPPER_AGES]),
     1: ("Fire, furnaces, magma: orange",
@@ -96,6 +96,10 @@ LIGHTS = {
         ["copper_torch", "copper_wall_torch"] + [f"{age}copper_lantern" for age in COPPER_AGES]),
 }
 
+# 10120 + the place of their light's color: blocks of which only a part gives off light.
+GLOW_BERRIES = {0: ("Glow berries: only the berries glow; the vines sway like leaves",
+                    ["cave_vines:berries=true", "cave_vines_plant:berries=true"])}
+
 
 def wrap(blocks):
     lines, line = [], ""
@@ -110,8 +114,8 @@ def wrap(blocks):
 
 def main():
     text = f"""# oh shiny! block ids. Written by tools/blocks.py; edit that and run it again. Must agree with lib/block_ids.glsl:
-# 10000 + the kind of block, 10100 and up for blocks that give off light. Names that a Minecraft version does
-# not have are skipped by Iris.
+# 10000 + the kind of block, 10100 and up for blocks that give off light, 10120 and up for glow berries. Names
+# that a Minecraft version does not have are skipped by Iris.
 
 # Water and lava.
 block.10001=water
@@ -140,6 +144,8 @@ block.10007={wrap(metal())}
 """
     for index, (comment, blocks) in LIGHTS.items():
         text += f"\n# {comment}\nblock.{10100 + index}={wrap(blocks)}\n"
+    for index, (comment, blocks) in GLOW_BERRIES.items():
+        text += f"\n# {comment}\nblock.{10120 + index}={wrap(blocks)}\n"
     (SHADERS / "block.properties").write_text(text)
 
     # Items share their blocks' names, without the block's state; wall torches and the like are no items, and

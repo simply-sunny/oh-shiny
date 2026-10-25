@@ -22,8 +22,12 @@ float mx_height_in_block(vec4 mid_block) {
 
 // `position` is relative to the eye, in world orientation. `height`: from mx_height_in_block.
 vec3 mx_wave(vec3 position, int type, float height) {
-    if (!MxWaving || type == 0 || type >= MX_BLOCK_GLOWING) {
+    if (!MxWaving || type == 0 || type == MX_BLOCK_GLOWING) {
         return position;
+    }
+    // Glow berries hang on vines that sway like the ones without.
+    if (type == MX_BLOCK_GLOW_BERRIES) {
+        type = MX_BLOCK_LEAVES;
     }
     vec3 world = position + MxCameraPos.xyz;
     float time = MxCameraPos.w;

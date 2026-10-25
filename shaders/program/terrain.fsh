@@ -69,7 +69,7 @@ void main() {
     // crossed quads have no meaningful facing of their own and are lit like the ground they grow from.
     float wrap = 0.0;
     float ambient_scale = 1.0;
-    if (type == MX_BLOCK_LEAVES) {
+    if (type == MX_BLOCK_LEAVES || type == MX_BLOCK_GLOW_BERRIES) {
         wrap = 0.3;
         ambient_scale = 0.9;
     } else if (mx_is_plant(type)) {
@@ -90,7 +90,7 @@ void main() {
     } else if (type == MX_BLOCK_METAL) {
         gloss = 0.8;
         highlight = albedo / max(mx_luminance(albedo), 0.05);
-    } else if (type == MX_BLOCK_LEAVES || mx_is_plant(type)) {
+    } else if (type == MX_BLOCK_LEAVES || type == MX_BLOCK_GLOW_BERRIES || mx_is_plant(type)) {
         gloss = 0.0;
     }
     float wet = MxSkyAmbient.w * smoothstep(0.75, 1.0, v_Light.y) * (MxSkyHorizon.w < 0.5 ? 1.0 : 0.0);
@@ -117,6 +117,11 @@ void main() {
     } else if (type == MX_BLOCK_GLOWING) {
         float level = v_Light.x;
         lit += albedo * level * level * 3.0;
+    } else if (type == MX_BLOCK_GLOW_BERRIES) {
+        // Only the berries glow: the bright orange in the texture, not the leaves around them.
+        float berry = smoothstep(0.15, 0.35, color.r - color.b) * smoothstep(0.55, 0.75, color.r);
+        float level = v_Light.x;
+        lit += albedo * level * level * 3.0 * berry;
     }
 
     fragColor = vec4(mx_fogged(lit, v_Position, fog), color.a);

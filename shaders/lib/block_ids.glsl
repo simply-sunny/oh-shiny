@@ -18,12 +18,16 @@ bool mx_is_plant(int type) {
 
 // A block that gives off light. How bright it is comes from the block light on its own faces.
 const int MX_BLOCK_GLOWING = 32;
+// Cave vines with glow berries: leaves that give off light from their berries alone.
+const int MX_BLOCK_GLOW_BERRIES = 33;
 
 // block.properties numbers kinds from 10000 (10000 + kind), and blocks that give off light from 10100, one id
-// for each color of light (10100 + its place in mx_light_palette, light_colors.glsl).
+// for each color of light (10100 + its place in mx_light_palette, light_colors.glsl). Glow berries are 10120 +
+// the color of their light.
 int mx_block_type(float id) {
     int value = int(id + 0.5);
     if (value >= 10100 && value < 10116) return MX_BLOCK_GLOWING;
+    if (value >= 10120 && value < 10136) return MX_BLOCK_GLOW_BERRIES;
     if (value > 10000 && value < 10100) return value - 10000;
     return 0;
 }
@@ -33,6 +37,7 @@ int mx_block_type(float id) {
 int mx_light_index(float id) {
     int value = int(id + 0.5);
     if (value >= 10100 && value < 10116) return value - 10100;
+    if (value >= 10120 && value < 10136) return value - 10120;
     if (value == 10000 + MX_BLOCK_LAVA) return 1;
     return -1;
 }
