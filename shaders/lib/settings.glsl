@@ -16,9 +16,9 @@
 // World
 #define WATER_REFLECTIONS // Water mirrors the world around it.
 #define WAVING // Water ripples; leaves and plants sway.
-// Where a haze over the land begins, in percent of the render distance: from there it thickens with distance,
-// most in the low ground. 0 is Off.
-#define FOG_START 0 // [0 10 20 30 40 50 60 70 80 90]
+// A haze over the land, thickening with distance and most in the low ground. The higher, the nearer it starts:
+// at 30 it starts 70% of the render distance out. 0 is Off.
+#define FOG_AMOUNT 0 // [0 10 20 30 40 50 60 70 80 90]
 
 // Image
 #define BLOOM // A soft glow around bright things.
