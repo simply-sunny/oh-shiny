@@ -18,11 +18,15 @@ vec2 mx_shadow_bend(vec2 clip) {
     return clip / (length(clip) * MX_SHADOW_BEND + (1.0 - MX_SHADOW_BEND));
 }
 
+// The map is centred up to half a step (shadowIntervalSize, settings.glsl) away from the player on each axis, so it
+// is drawn a little smaller, for its far side still to reach Shadow Distance.
+const float MX_SHADOW_FIT = shadowDistance / (shadowDistance + shadowIntervalSize * 0.87);
+
 // Where a point (relative to the eye) is drawn into the shadow map, in clip space. Drawing (shadow.vsh) and
-// reading (mx_shadow_coord) both go through here. The map, and its bend, are centred exactly on the player.
+// reading (mx_shadow_coord) both go through here.
 vec4 mx_shadow_clip(vec3 position) {
     vec4 clip = shadowProjection * (shadowModelView * vec4(position + mx_feet_offset(), 1.0));
-    clip.xy = mx_shadow_bend(clip.xy);
+    clip.xy = mx_shadow_bend(clip.xy * MX_SHADOW_FIT);
     return clip;
 }
 
@@ -74,7 +78,7 @@ float mx_shadow(vec3 position, vec3 normal) {
     // Look the point up a little way off the surface, or the surface shadows itself in stripes. A texel covers
     // more ground further from the player and when the light grazes the surface, so step further off there.
     float squeeze = (distance_from_camera / range) * MX_SHADOW_BEND + (1.0 - MX_SHADOW_BEND);
-    float texel_size = 2.0 * range * MxShadowTexel * squeeze;
+    float texel_size = 2.0 * range * MxShadowTexel * squeeze / MX_SHADOW_FIT;
     vec3 lifted = position + normal * texel_size * (1.5 + 2.5 * (1.0 - facing));
 
     vec3 coord = mx_shadow_coord(lifted);
