@@ -29,6 +29,18 @@ vec3 position_at(ivec2 texel) {
     return view_position((vec2(texel) + 0.5) * MxScreen.zw, min(depth_at(texel), 0.99999));
 }
 
+// Sun Ray Strength: how thick the air is with light, and how strong the shafts across the picture are.
+#if SUN_RAYS_STRENGTH >= 3
+const float MX_RAYS_AIR = 6.0;
+const float MX_SHAFTS = 1.0;
+#elif SUN_RAYS_STRENGTH == 2
+const float MX_RAYS_AIR = 2.5;
+const float MX_SHAFTS = 0.4;
+#else
+const float MX_RAYS_AIR = 1.0;
+const float MX_SHAFTS = 0.0;
+#endif
+
 // Whether the sun reaches a point of the air (relative to the eye), from the shadow map. Outside the map
 // everything counts as lit.
 float lit_at(vec3 position) {
@@ -70,8 +82,61 @@ vec3 sun_rays(vec3 direction, float distance_to) {
     // thicker when the sun is low, and in rain.
     float air = 0.04 + 0.10 * (1.0 - smoothstep(0.1, 0.5, MxLightDir.y)) + 0.10 * MxSkyAmbient.w;
     // Moonlight makes faint rays, and against a dark sky even a little reads as a grey veil; keep it slight.
-    air *= mix(0.25, 1.0, MxLightColor.w);
+    air *= mix(0.25, 1.0, MxLightColor.w) * MX_RAYS_AIR;
     return MxLightColor.rgb * MxLightDir.w * lit * air * forward * under_sky;
+}
+
+// Whether a point of the picture shows the sky: nothing of the world in front of it, near or far-off.
+bool sky_at(vec2 uv) {
+    if (depth_at(ivec2(uv * MxScreen.xy)) < 1.0) {
+        return false;
+    }
+#ifdef MX_LOD
+    if (textureLod(MX_LOD_DEPTH, uv, 0.0).r < 1.0) {
+        return false;
+    }
+#endif
+    return true;
+}
+
+// Shafts across the picture, with Sun Ray Strength above Soft: from each pixel towards the sun on screen, how
+// much of the way is open sky. Light pours out between leaves, over ridges and past the far-off terrain, as far
+// as anything is drawn, where the shadow map does not reach. Brightest close to the sun, gone by the picture's
+// far side.
+vec3 sun_shafts(vec2 uv) {
+    float under_sky = smoothstep(0.05, 0.6, MxEyeSkyLight);
+    if (MX_SHAFTS <= 0.0 || !MxSunRays || MxLightDir.w <= 0.0 || under_sky <= 0.0) {
+        return vec3(0.0);
+    }
+    // The sun as a point infinitely far off, on screen; behind the camera there is nothing to pour from.
+    vec4 clip = gbufferProjection * vec4(mat3(gbufferModelView) * MxLightDir.xyz, 0.0);
+    if (clip.w <= 0.0) {
+        return vec3(0.0);
+    }
+    vec2 sun = clip.xy / clip.w * 0.5 + 0.5;
+    vec2 across = (uv - sun) * vec2(MxScreen.x * MxScreen.w, 1.0);
+    float near_sun = exp(-dot(across, across) * 3.0);
+    if (near_sun < 0.01) {
+        return vec3(0.0);
+    }
+    const int STEPS = 20;
+    vec2 stride = (sun - uv) / float(STEPS);
+    float jitter = mx_dither(gl_FragCoord.xy);
+    float open = 0.0;
+    float total = 0.0;
+    float weight = 1.0;
+    for (int i = 0; i < STEPS; i++) {
+        vec2 at = uv + stride * (float(i) + jitter);
+        if (at.x >= 0.0 && at.x <= 1.0 && at.y >= 0.0 && at.y <= 1.0 && sky_at(at)) {
+            open += weight;
+        }
+        total += weight;
+        // What is next to the pixel counts more than what is next to the sun, so each gap casts its own shaft.
+        weight *= 0.93;
+    }
+    open /= total;
+    float strength = MX_SHAFTS * 0.6 * mix(0.25, 1.0, MxLightColor.w);
+    return MxLightColor.rgb * MxLightDir.w * open * open * near_sun * strength * under_sky;
 }
 
 // The surface normal at a texel, from the depth of its neighbours. Of the two neighbours on each axis the
@@ -151,7 +216,7 @@ void main() {
     vec3 direction = normalize(mat3(gbufferModelViewInverse) * position);
     float distance_to = sky ? 1.0e5 : length(position);
 
-    vec3 rays = sun_rays(direction, distance_to);
+    vec3 rays = sun_rays(direction, distance_to) + sun_shafts(uv);
     float open = sky || hand ? 1.0 : occlusion(texel, uv, position);
     fragColor = vec4(rays, open);
     linearDepth = vec4(sky ? 1.0e5 : -position.z, 0.0, 0.0, 1.0);

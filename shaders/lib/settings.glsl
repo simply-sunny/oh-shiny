@@ -14,6 +14,7 @@
 #define HAND_LIGHT // A torch or other light held in the hand lights up what is around the player.
 #define AMBIENT_OCCLUSION // Corners and crevices are a little darker.
 //#define SUN_RAYS // Shafts of sunlight through trees, openings and haze, in the air itself.
+#define SUN_RAYS_STRENGTH 3 // Sun Ray Strength: 1 Soft, the air only; 2 Strong and 3 Insane add shafts pouring across the picture. [1 2 3]
 
 // World
 #define WATER_REFLECTIONS // Water mirrors the world around it.
