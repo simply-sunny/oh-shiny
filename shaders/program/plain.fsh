@@ -1,5 +1,5 @@
 // What keeps the game's own look. MX_TEXTURED: has a texture. MX_LIGHTMAP: lit by the game's light map.
-// MX_GAME_FOG: fades into the game's fog.
+// MX_GAME_FOG: fades into the game's fog. MX_CELESTIAL: the sun and moon.
 
 #include "/lib/frame.glsl"
 
@@ -19,6 +19,13 @@ layout(location = 0) out vec4 fragColor;
 
 void main() {
     mx_setup();
+#ifdef MX_CELESTIAL
+    // Under water the sky is only seen through the surface, which draws the sun bent by the ripples itself
+    // (lib/water.glsl); the game's square sun showed through it unbent.
+    if (MxUnderwater && (renderStage == MC_RENDER_STAGE_SUN || renderStage == MC_RENDER_STAGE_MOON)) {
+        discard;
+    }
+#endif
     vec4 color = v_Color;
 #ifdef MX_TEXTURED
     color *= texture(gtexture, v_TexCoord);

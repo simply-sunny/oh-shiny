@@ -206,7 +206,9 @@ vec4 mx_water_below(vec3 tint, vec3 position, vec3 flat_normal, vec2 light) {
     if (dot(out_dir, out_dir) < 0.5) {
         out_dir = vec3(0.0, 1.0, 0.0);
     }
-    float glint = pow(max(dot(out_dir, MxLightDir.xyz), 0.0), 40.0) * 0.6;
+    // The sun or moon itself (the game's is hidden under water: program/plain.fsh) and the glow around it.
+    float towards = max(dot(out_dir, MxLightDir.xyz), 0.0);
+    float glint = pow(towards, 40.0) * 0.6 + smoothstep(0.9985, 0.9995, towards) * 3.0;
     vec3 above = mx_tonemap((mx_sky(out_dir) * 1.2 + 0.08 + MxLightColor.rgb * glint * MxLightDir.w) * MxExposure) * open;
 
     // Past the window: a mirror of the water and the bottom below.

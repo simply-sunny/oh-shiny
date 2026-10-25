@@ -41,6 +41,8 @@ MACROS = """#define IS_IRIS
 #define MC_VERSION 260300
 #define MC_RENDER_STAGE_SKY 1
 #define MC_RENDER_STAGE_SUNSET 2
+#define MC_RENDER_STAGE_SUN 4
+#define MC_RENDER_STAGE_MOON 5
 #define MC_RENDER_STAGE_STARS 6
 """
 # What Iris adds with Distant Horizons running: the define everywhere, and in its programs the block kinds and
