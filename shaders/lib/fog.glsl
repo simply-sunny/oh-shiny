@@ -33,29 +33,24 @@ float mx_fog_amount(vec3 position) {
 #if FOG_AMOUNT > 0
 // The Fog setting's haze, over the last share of what is drawn that the setting names: Distant Horizons' or
 // Voxy's far terrain where there is some, the game's own render distance otherwise. Clear up to its start, then
-// thickening with distance as real air does, so that by the edge of what is drawn nine tenths of what is behind
-// it is hidden at sea level. It is thickest low down and thins with height, so valleys fill with it while hills
-// and mountains stand out above. `position`: relative to the eye.
+// thickening steadily, so that by the edge of what is drawn almost nothing behind it shows. It lies in the low
+// ground: what is seen there is fogged fully, and less the higher above the sea it stands, so valleys fill with it
+// and hills and mountains stand out above, however high the player is. `position`: relative to the eye.
 float mx_mist(vec3 position) {
     float edge = mx_view_far();
     float start = edge * float(100 - FOG_AMOUNT) / 100.0;
-    float distance_to = length(position);
-    float through = max(distance_to - start, 0.0);
+    float through = clamp((length(position) - start) / max(edge - start, 16.0), 0.0, 1.0);
     if (through <= 0.0) {
         return 0.0;
     }
     const float sea_level = 63.0;
-    const float thinning = 48.0;   // blocks over which it thins to about a third
-    float density = 2.3 / max(edge - start, 16.0);
-    // Its thickness averaged over the way from the eye to the point, which climbs or falls.
-    float low = (cameraPosition.y - sea_level) / thinning;
-    float rise = position.y / thinning;
-    float average = abs(rise) < 1.0e-3 ? exp(-low) : exp(-low) * (1.0 - exp(-rise)) / rise;
+    const float thinning = 64.0;   // blocks above the sea over which it thins to about a third
+    float height = cameraPosition.y + position.y - sea_level;
+    float low = clamp(exp(-max(height, 0.0) / thinning), 0.2, 1.0);
     // It is the open air's: it fades away while the player is somewhere the sky barely reaches, like a cave, even
     // one with a hole in its roof, and anywhere well below the sea, where the sky can only be through a shaft.
     float outdoors = smoothstep(0.5, 0.85, float(eyeBrightnessSmooth.y) / 240.0) * smoothstep(40.0, 56.0, cameraPosition.y);
-    // No thicker than at sea level, or a cavern far below would fill up.
-    return (1.0 - exp(-density * through * clamp(average, 0.0, 1.0))) * outdoors;
+    return (1.0 - exp(-3.5 * through * low)) * outdoors;
 }
 #endif
 
