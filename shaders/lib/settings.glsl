@@ -27,6 +27,22 @@
 #define BLOOM // A soft glow around bright things.
 #define SMOOTH_EDGES // Blends away the stair steps along edges.
 
+// Color grading (lib/grade.glsl). 0 is Normal throughout.
+#define GRADE_EXPOSURE 0 // Hundredths of a stop. [-100 -75 -50 -25 0 25 50 75 100]
+#define GRADE_CONTRAST 0 // [-50 -40 -30 -20 -10 0 10 20 30 40 50]
+#define GRADE_SATURATION 0 // -100 is black and white. [-100 -80 -60 -40 -20 -10 0 10 20 30 40 50]
+#define GRADE_VIBRANCE 0 // [-50 -40 -30 -20 -10 0 10 20 30 40 50]
+#define GRADE_TEMPERATURE 0 // Cooler below 0, warmer above. [-50 -40 -30 -20 -10 0 10 20 30 40 50]
+#define GRADE_TINT 0 // Greener below 0, more magenta above. [-50 -40 -30 -20 -10 0 10 20 30 40 50]
+#define GRADE_SHADOWS 0 // Deeper below 0, lifted above. [-50 -40 -30 -20 -10 0 10 20 30 40 50]
+#define GRADE_HIGHLIGHTS 0 // Held back below 0, brighter above. [-50 -40 -30 -20 -10 0 10 20 30 40 50]
+#define GRADE_FADE 0 // Blacks lifted to a grey, like a faded print. [0 5 10 15 20 25 30]
+#define GRADE_SHADOW_TONE 4 // 0 red, 1 orange, 2 gold, 3 green, 4 teal, 5 blue, 6 purple, 7 pink. [0 1 2 3 4 5 6 7]
+#define GRADE_SHADOW_TONE_AMOUNT 0 // [0 10 20 30 40 50 60 70 80 90 100]
+#define GRADE_HIGHLIGHT_TONE 2 // [0 1 2 3 4 5 6 7]
+#define GRADE_HIGHLIGHT_TONE_AMOUNT 0 // [0 10 20 30 40 50 60 70 80 90 100]
+#define GRADE_VIGNETTE 0 // Corners darkened. [0 10 20 30 40 50 60 70 80 90 100]
+
 // Iris lists an on/off option only where it sees it tested; this one is only tested in shaders.properties.
 #ifdef MOB_SHADOWS
 #endif

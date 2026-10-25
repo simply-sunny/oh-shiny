@@ -14,6 +14,7 @@ through Metallum and [Leadlight](https://github.com/ohjey/leadlight).
 - Bloom, sun rays and ambient occlusion
 - Leaves, plants and water that move in the wind
 - Edge smoothing
+- Color grading
 - Far-off terrain from [Distant Horizons](https://modrinth.com/mod/distanthorizons) and, on Iris,
   [Voxy](https://modrinth.com/mod/voxy), lit and fogged like the rest
 
@@ -32,6 +33,9 @@ many fit across a block, and **Soft Pixel Edges** smooths their edges. **Shadow 
 shadows, which also hides their shimmer as you move. **Fog** lays a haze over the last part of what you can
 see (far terrain from Distant Horizons or Voxy included), thickest far off and in the valleys; Off keeps fog
 only at the edge.
+
+**Color Grading** has a screen of its own: exposure, contrast, shadows, highlights, saturation, vibrance,
+temperature, tint, shadow and highlight color, fade and vignette. All start at Normal.
 
 Shadows cost the most. If the game runs slowly, turn off **Mob Shadows**, lower **Shadow Distance**, or turn
 off **Shadows**.

@@ -3,10 +3,12 @@
 // texture are edges too, to the eye of a filter, and blending those would blur every block. Then, with Bloom on,
 // the glow is laid over it (worked out by the bloom passes into colortex10). The glow is done here rather than
 // in a pass of its own, which would read and write the whole picture once more; it is soft enough that smoothing
-// the edges before it rather than after makes no difference to see.
+// the edges before it rather than after makes no difference to see. Last comes the color grading
+// (lib/grade.glsl), when any Color Grading setting is on.
 
 #include "/lib/frame.glsl"
 #include "/lib/color.glsl"
+#include "/lib/grade.glsl"
 
 uniform sampler2D colortex0;
 uniform sampler2D depthtex0;
@@ -102,6 +104,9 @@ void main() {
 #endif
 #ifdef BLOOM
     color = glow(color);
+#endif
+#ifdef MX_GRADING
+    color = mx_color_grade(color, texCoord);
 #endif
     fragColor = vec4(color, 1.0);
 }
