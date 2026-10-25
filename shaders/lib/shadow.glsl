@@ -98,7 +98,7 @@ float mx_shadow(vec3 position, vec3 normal) {
     float lit = step(0.5, covered);
 #endif
 #else
-    // Four smoothed lookups in a square give a soft edge about three texels wide, with no grain; Shadow Softness
+    // Four smoothed lookups in a square give a soft edge about three texels wide, with no grain; Shadow Blur
     // widens it, and from 2 up four more lookups between them keep it smooth. Further out a texel of the map
     // covers more ground and a pixel of the screen less, so one smoothed lookup is already as soft as the four
     // are near by, unless the edges are to be softer still: there they are what hides the map's texels sliding
