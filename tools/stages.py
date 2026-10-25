@@ -20,7 +20,7 @@ STAGES = {
     "gbuffers_basic": ("plain.vsh", "plain.fsh", ["MX_GAME_FOG"], "0", []),
     "gbuffers_textured": ("plain.vsh", "plain.fsh", ["MX_TEXTURED", "MX_LIGHTMAP", "MX_GAME_FOG"], "0", []),
     "gbuffers_skybasic": ("plain.vsh", "sky_basic.fsh", [], "0", []),
-    "gbuffers_skytextured": ("plain.vsh", "plain.fsh", ["MX_TEXTURED"], "0", []),
+    "gbuffers_skytextured": ("plain.vsh", "plain.fsh", ["MX_TEXTURED", "MX_CELESTIAL"], "0", []),
     "gbuffers_clouds": ("clouds.vsh", "clouds.fsh", [], "0", []),
     "gbuffers_terrain": ("terrain.vsh", "terrain.fsh", [], "0", []),
     "gbuffers_damagedblock": ("plain.vsh", "plain.fsh", ["MX_TEXTURED"], "0", []),
@@ -54,13 +54,14 @@ COMPOSITES = [
     ("effects.fsh", "6,15", []),
     ("effects_blur.fsh", "7", []),
     ("effects_apply.fsh", "0", []),
-    # The glow: the picture at half size, four steps down, four steps back up. final.fsh lays it over the picture.
+    # The glow: the picture at quarter size, three steps down, three steps back up. final.fsh lays it over the
+    # picture.
     ("bloom_prefilter.fsh", "10", []),
     *[("bloom_downsample.fsh", str(11 + step),
-       [f"uniform sampler2D colortex{10 + step};", f"#define MX_BLOOM_IN colortex{10 + step}"]) for step in range(4)],
-    *[("bloom_upsample.fsh", str(13 - step),
-       [f"uniform sampler2D colortex{14 - step};", f"uniform sampler2D colortex{13 - step};",
-        f"#define MX_BLOOM_IN colortex{14 - step}", f"#define MX_BLOOM_OUT colortex{13 - step}"]) for step in range(4)],
+       [f"uniform sampler2D colortex{10 + step};", f"#define MX_BLOOM_IN colortex{10 + step}"]) for step in range(3)],
+    *[("bloom_upsample.fsh", str(12 - step),
+       [f"uniform sampler2D colortex{13 - step};", f"uniform sampler2D colortex{12 - step};",
+        f"#define MX_BLOOM_IN colortex{13 - step}", f"#define MX_BLOOM_OUT colortex{12 - step}"]) for step in range(3)],
 ]
 STAGES.update({
     ("composite" if index == 0 else f"composite{index}"): ("fullscreen.vsh", program, [], targets, extra)

@@ -1,6 +1,6 @@
-// The first step of the glow: the picture at half size, with its light as bright as it was. The glow is a chain:
-// this, four steps down to 1/32 (bloom_downsample.fsh), four steps back up with each size added onto the one
-// above it (bloom_upsample.fsh), then a thin layer over the picture (final.fsh). The blur that gives is
+// The first step of the glow: the picture at quarter size, with its light as bright as it was. The glow is a
+// chain: this, three steps down to 1/32 (bloom_downsample.fsh), three steps back up with each size added onto
+// the one above it (bloom_upsample.fsh), then a thin layer over the picture (final.fsh). The blur that gives is
 // tight near a bright thing and wide further out.
 
 #include "/lib/frame.glsl"
@@ -21,8 +21,9 @@ vec3 scene_light(vec2 uv) {
     return shown * (-log(1.0 - min(level, 0.996)) / max(level, 1.0e-4));
 }
 
-// Four spread samples per pixel, each weighted down by its own brightness, so a single very bright pixel does
-// not flicker as the camera moves.
+// Four spread samples per pixel, each the smoothed average of four of the picture's texels, so together they
+// cover the four by four the pixel stands for. Each is weighted down by its own brightness, so a single very
+// bright pixel does not flicker as the camera moves.
 void main() {
     mx_setup();
     if (MxBloom <= 0.0) {

@@ -32,12 +32,14 @@ vec3 mx_project(vec3 view_point) {
 // Follows a reflected ray (in view space) through the copy of the world and returns what it runs into: rgb is
 // that color (linear), a is how sure the hit is (0 for none; fades out near the edge of the screen, beyond which
 // nothing is known).
-vec4 mx_reflect_scene(vec3 origin, vec3 direction, float jitter) {
-    // Steps grow by half each time: sixteen reach about 400 blocks, as far as the screen shows anything.
+// `steps`: how many to take; `growth`: how much longer each is than the one before; `refine`: how many times to
+// halve the last one. Fewer, faster-growing steps reach as far for less: twelve growing by 1.75 reach about 330
+// blocks, near enough as far as the screen shows anything, where sixteen growing by half reached 400.
+vec4 mx_reflect_scene(vec3 origin, vec3 direction, float jitter, int steps, float growth, int refine) {
     float stride = 0.3;
     vec3 previous = origin;
     vec3 point = origin + direction * stride * (0.5 + jitter);
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < steps; i++) {
         vec4 clip = gbufferProjection * vec4(point, 1.0);
         if (clip.w <= 0.0) {
             break;
@@ -55,7 +57,7 @@ vec4 mx_reflect_scene(vec3 origin, vec3 direction, float jitter) {
                 // Passed through a surface since the last step: halve the gap a few times to find where.
                 vec3 near_end = previous;
                 vec3 far_end = point;
-                for (int j = 0; j < 5; j++) {
+                for (int j = 0; j < refine; j++) {
                     vec3 middle = (near_end + far_end) * 0.5;
                     vec2 middle_uv = mx_project(middle).xy;
                     float middle_depth = textureLod(depthtex1, middle_uv, 0.0).r;
@@ -72,34 +74,36 @@ vec4 mx_reflect_scene(vec3 origin, vec3 direction, float jitter) {
             }
         }
         previous = point;
-        stride *= 1.5;
+        stride *= growth;
         point += direction * stride;
     }
     return vec4(0.0);
 }
 
-// The water's surface: the broad waves that also move its vertices, plus ripples of two sizes drifting across
-// each other. Noise instead of more sine waves, which would line up into a visible grid.
-float mx_water_surface(vec2 world, float time) {
-    float height = mx_water_height(world, time) * 0.6
-         + 1.1 * mx_noise(world * 1.3 + vec2(time * 0.55, time * 0.21))
-         + 0.6 * mx_noise(world * 3.1 + vec2(-time * 0.74, time * 0.48));
+// How steep the water's surface is at a point, along x and z: the broad waves that also move its vertices
+// (mx_water_height), plus ripples of two sizes drifting across each other. Noise instead of more sine waves,
+// which would line up into a visible grid. Worked out directly, in one go: from heights at three points it took
+// three times the noise, which made water the costliest thing on screen.
+vec2 mx_water_slope(vec2 world, float time) {
+    vec2 slope = 0.6 * (cos(world.x * 0.82 + world.y * 0.53 + time * 1.45) * 0.5 * vec2(0.82, 0.53)
+                      + cos(world.x * -1.71 + world.y * 1.27 + time * 1.93) * 0.3 * vec2(-1.71, 1.27)
+                      + cos(world.x * 3.13 + world.y * 2.29 - time * 2.61) * 0.2 * vec2(3.13, 2.29))
+         + 1.1 * 1.3 * mx_noise_slope(world * 1.3 + vec2(time * 0.55, time * 0.21))
+         + 0.6 * 3.1 * mx_noise_slope(world * 3.1 + vec2(-time * 0.74, time * 0.48));
     // Rain pocks the surface with small, fast, ever-changing dimples.
     float rain = MxSkyAmbient.w;
     if (rain > 0.0) {
-        height += rain * 1.4 * (mx_noise(world * 7.0 + vec2(time * 4.1, -time * 3.3)) + mx_noise(world * 9.5 + vec2(-time * 5.2, time * 4.7)) - 1.0);
+        slope += rain * 1.4 * (7.0 * mx_noise_slope(world * 7.0 + vec2(time * 4.1, -time * 3.3))
+                             + 9.5 * mx_noise_slope(world * 9.5 + vec2(-time * 5.2, time * 4.7)));
     }
-    return height;
+    return slope;
 }
 
 // The normal of the rippled surface at a point, for a face that looks up. Ripples flatten out with distance,
 // where they would only shimmer.
 vec3 mx_water_normal(vec2 world, float time, float distance_to) {
-    const float STEP = 0.06;
-    float here = mx_water_surface(world, time);
-    vec2 slope = vec2(mx_water_surface(world + vec2(STEP, 0.0), time) - here,
-                      mx_water_surface(world + vec2(0.0, STEP), time) - here) / STEP;
-    float calm = 0.075 / (1.0 + distance_to * 0.07);
+    vec2 slope = mx_water_slope(world, time);
+    float calm = 0.075 / (1.0 + distance_to * 0.07) * (1.0 - smoothstep(64.0, 96.0, distance_to));
     return normalize(vec3(-slope.x * calm, 1.0, -slope.y * calm));
 }
 
@@ -115,8 +119,15 @@ vec4 mx_water(vec3 tint, vec3 position, vec3 flat_normal, vec2 light, float fog)
     float time = MxCameraPos.w;
     bool top = flat_normal.y > 0.7;
 
+    // Fogged over completely, the water is the fog's color and nothing of it needs working out.
+    float amount = mx_fog_total(position, fog);
+    if (amount > 0.995) {
+        return vec4(mx_to_display(mx_grade(mx_tonemap(mx_fog_sky(view) * MxExposure))), 1.0);
+    }
+
+    // Past 96 blocks the ripples are flattened out (mx_water_normal), so they are not worked out at all.
     vec3 normal = flat_normal;
-    if (top && MxWaving) {
+    if (top && MxWaving && distance_to < 96.0) {
         normal = mx_water_normal(world.xz, time, distance_to);
     }
 
@@ -138,7 +149,7 @@ vec4 mx_water(vec3 tint, vec3 position, vec3 flat_normal, vec2 light, float fog)
     // shadow to see: the water above it takes the shadow only as far as the bottom is hidden. Shading the
     // surface as well would draw the same shadow twice, at two depths.
     float facing = mx_facing(flat_normal, 0.0);
-    float sunlit = facing > 0.0 ? mx_shadow(position, flat_normal) : 1.0;
+    float sunlit = facing > 0.0 ? mx_shadow_quick(position, flat_normal) : 1.0;
     float shadow = mix(1.0, sunlit, 1.0 - clear);
     vec3 scatter = mx_lit(mx_to_linear(tint), vec3(0.0, 1.0, 0.0), position, light, facing, shadow);
     scatter = mix(scatter, vec3(mx_luminance(scatter)) * 0.85, 0.30 * (1.0 - clear));
@@ -159,12 +170,19 @@ vec4 mx_water(vec3 tint, vec3 position, vec3 flat_normal, vec2 light, float fog)
     mirrored = normalize(mirrored);
     float towards_light = max(dot(mirrored, MxLightDir.xyz), 0.0);
     float glint = pow(towards_light, 900.0) * 70.0 + pow(towards_light, 80.0) * 0.7;
-    vec3 sky = mx_sky(mirrored) + MxLightColor.rgb * glint * sunlit * MxLightDir.w;
-    // Under a roof or deep in a cave there is no sky to mirror.
-    vec3 reflection = mx_tonemap(sky * MxExposure) * smoothstep(0.1, 0.9, light.y);
+    vec4 hit = vec4(0.0);
     if (MxReflections) {
-        vec4 hit = mx_reflect_scene(mat3(gbufferModelView) * position, mat3(gbufferModelView) * mirrored, mx_dither(gl_FragCoord.xy));
-        reflection = mix(reflection, hit.rgb, hit.a);
+        // Far-off water takes fewer, longer steps: there the steps are small on screen anyway.
+        bool far_off = distance_to > 64.0;
+        hit = mx_reflect_scene(mat3(gbufferModelView) * position, mat3(gbufferModelView) * mirrored,
+                               mx_dither(gl_FragCoord.xy), far_off ? 7 : 12, far_off ? 1.9 : 1.75, far_off ? 2 : 4);
+    }
+    // The sky, only where the world mirrored does not cover it; under a roof or deep in a cave there is none.
+    vec3 reflection = hit.rgb * hit.a;
+    float open_sky = smoothstep(0.1, 0.9, light.y);
+    if (hit.a < 1.0 && open_sky > 0.0) {
+        vec3 sky = mx_sky(mirrored) + MxLightColor.rgb * glint * sunlit * MxLightDir.w;
+        reflection = mix(mx_tonemap(sky * MxExposure) * open_sky, hit.rgb, hit.a);
     }
 
     // Blend: the image behind keeps `clear * (1 - mirror)` of itself; the rest is body and reflection.
@@ -172,9 +190,10 @@ vec4 mx_water(vec3 tint, vec3 position, vec3 flat_normal, vec2 light, float fog)
     vec3 over = (body * (1.0 - clear) * (1.0 - mirror) + reflection * mirror) / max(alpha, 1.0e-3);
 
     // Fog, as on land.
-    float amount = mx_fog_total(position, fog);
-    over = mix(over, mx_tonemap(mx_fog_sky(view) * MxExposure), amount);
-    alpha = mix(alpha, 1.0, amount);
+    if (amount > 0.0) {
+        over = mix(over, mx_tonemap(mx_fog_sky(view) * MxExposure), amount);
+        alpha = mix(alpha, 1.0, amount);
+    }
 
     return vec4(mx_to_display(mx_grade(over)), alpha);
 }
@@ -216,7 +235,7 @@ vec4 mx_water_below(vec3 tint, vec3 position, vec3 flat_normal, vec2 light) {
     vec3 reflection = below;
     if (MxReflections) {
         vec3 mirrored = reflect(view, normal);
-        vec4 hit = mx_reflect_scene(mat3(gbufferModelView) * position, mat3(gbufferModelView) * mirrored, mx_dither(gl_FragCoord.xy));
+        vec4 hit = mx_reflect_scene(mat3(gbufferModelView) * position, mat3(gbufferModelView) * mirrored, mx_dither(gl_FragCoord.xy), 12, 1.75, 4);
         reflection = mix(below, mx_tonemap(hit.rgb * MxExposure), hit.a * 0.8);
     }
 

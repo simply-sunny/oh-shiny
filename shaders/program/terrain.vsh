@@ -4,6 +4,7 @@
 #include "/lib/frame.glsl"
 #include "/lib/block_ids.glsl"
 #include "/lib/waving.glsl"
+#include "/lib/shadow.glsl"
 
 in vec4 mc_Entity;
 in vec4 at_midBlock;
@@ -13,6 +14,8 @@ out vec2 v_TexCoord;
 out vec2 v_Light;
 out vec3 v_Position;
 out vec3 v_Normal;
+// mx_shadow_unbent of v_Position, for mx_shadow_from.
+out vec3 v_ShadowUnbent;
 flat out int v_Type;
 
 void main() {
@@ -31,5 +34,6 @@ void main() {
     gl_Position = gl_ProjectionMatrix * vec4(view, 1.0);
 
     v_Position = waved;
+    v_ShadowUnbent = mx_shadow_unbent(waved);
     v_Normal = normalize(mat3(gbufferModelViewInverse) * (gl_NormalMatrix * gl_Normal));
 }

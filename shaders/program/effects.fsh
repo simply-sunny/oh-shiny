@@ -179,7 +179,9 @@ float occlusion(ivec2 texel, vec2 uv, vec3 position) {
     float turn = mx_dither(gl_FragCoord.xy) * 6.2831853;
     float blocked = 0.0;
     float counted = 0.0;
-    const int TAPS = 8;
+    // Five, spread on a golden-angle spiral and turned by the dither; effects_blur.fsh smooths what the fewer
+    // samples leave grainy.
+    const int TAPS = 5;
     for (int i = 0; i < TAPS; i++) {
         float angle = turn + float(i) * 2.3999632;
         float spread = sqrt((float(i) + 0.5) / float(TAPS));

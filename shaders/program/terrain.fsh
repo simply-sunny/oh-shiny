@@ -20,6 +20,7 @@ in vec2 v_TexCoord;
 in vec2 v_Light;
 in vec3 v_Position;
 in vec3 v_Normal;
+in vec3 v_ShadowUnbent;
 flat in int v_Type;
 
 layout(location = 0) out vec4 fragColor;
@@ -79,7 +80,7 @@ void main() {
 
     vec3 albedo = mx_to_linear(color.rgb);
     float facing = mx_facing(normal, wrap);
-    float shadow = facing > 0.0 ? mx_shadow(v_Position, normal) : 1.0;
+    float shadow = facing > 0.0 ? mx_shadow_from(v_Position, v_ShadowUnbent, normal) : 1.0;
 
     // How much a surface mirrors the sun: polished things and metal a lot, most blocks a little. Rain wets
     // everything under the open sky, which darkens it and makes it shine.
@@ -106,7 +107,7 @@ void main() {
     if (wrap > 0.0) {
         float against = pow(max(dot(normalize(v_Position), MxLightDir.xyz), 0.0), 6.0);
         if (against > 0.01) {
-            float reached = facing > 0.0 ? shadow : mx_shadow(v_Position, normal);
+            float reached = facing > 0.0 ? shadow : mx_shadow_from(v_Position, v_ShadowUnbent, normal);
             lit += albedo * MxLightColor.rgb * against * 0.45 * reached * smoothstep(0.08, 0.5, v_Light.y);
         }
     }

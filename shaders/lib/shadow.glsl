@@ -36,6 +36,20 @@ vec3 mx_shadow_coord(vec3 position) {
     return mx_shadow_clip(position).xyz * 0.5 + 0.5;
 }
 
+// Where a point (relative to the eye) is in the shadow map's clip space before the bend. The projection is
+// orthographic, so this is a straight line in the point: worked out at the vertices (terrain.vsh) it is exact
+// at every pixel between them, and each pixel is left only the bend, not the two matrices.
+vec3 mx_shadow_unbent(vec3 position) {
+    return (shadowProjection * (shadowModelView * vec4(position + mx_feet_offset(), 1.0))).xyz;
+}
+
+// mx_shadow_coord of the point `unbent` stands for, moved `offset` (in world orientation) further.
+vec3 mx_shadow_coord_from(vec3 unbent, vec3 offset) {
+    vec3 clip = unbent + mat3(shadowProjection) * (mat3(shadowModelView) * offset);
+    clip.xy = mx_shadow_bend(clip.xy * MX_SHADOW_FIT);
+    return clip * 0.5 + 0.5;
+}
+
 // One smoothed lookup: the four texels around `uv` are each compared with `depth`, and the four yes-or-no
 // answers are blended by how close `uv` is to each, by the hardware. Blending the answers, not the depths, is
 // what makes a shadow edge slide smoothly across the map's texels as the sun turns, where a plain lookup would
@@ -61,12 +75,14 @@ vec3 mx_pixel_lock(vec3 position, vec3 normal) {
 #endif
 
 // How much of the sun's or moon's light reaches a point: 1 fully lit, 0 fully shadowed.
-// `position` is relative to the eye; `normal` is the surface normal there.
-float mx_shadow(vec3 position, vec3 normal) {
+// `position` is relative to the eye; `unbent` is mx_shadow_unbent(position), from the vertices where they can
+// give it; `normal` is the surface normal there.
+float mx_shadow_from(vec3 position, vec3 unbent, vec3 normal) {
     float strength = MxLightDir.w;
     if (strength <= 0.0) return 1.0;
 #ifdef PIXEL_SHADOWS
     position = mx_pixel_lock(position, normal);
+    unbent = mx_shadow_unbent(position);
 #endif
 
     float range = MxShadowRange;
@@ -79,9 +95,9 @@ float mx_shadow(vec3 position, vec3 normal) {
     // more ground further from the player and when the light grazes the surface, so step further off there.
     float squeeze = (distance_from_camera / range) * MX_SHADOW_BEND + (1.0 - MX_SHADOW_BEND);
     float texel_size = 2.0 * range * MxShadowTexel * squeeze / MX_SHADOW_FIT;
-    vec3 lifted = position + normal * texel_size * (1.5 + 2.5 * (1.0 - facing));
+    vec3 lift = normal * texel_size * (1.5 + 2.5 * (1.0 - facing));
 
-    vec3 coord = mx_shadow_coord(lifted);
+    vec3 coord = mx_shadow_coord_from(unbent, lift);
     float depth = coord.z - 0.15 * MX_SHADOW_DEPTH_PER_BLOCK;
 
 #ifdef PIXEL_SHADOWS
@@ -96,7 +112,7 @@ float mx_shadow(vec3 position, vec3 normal) {
     float covered = 0.0;
     for (int i = 0; i < 4; i++) {
         vec2 corner = vec2(i & 1, i >> 1) * 2.0 - 1.0;
-        vec3 at = mx_shadow_coord(lifted + (across * corner.x + along * corner.y) * quarter);
+        vec3 at = mx_shadow_coord_from(unbent, lift + (across * corner.x + along * corner.y) * quarter);
         covered += mx_shadow_tap(at.xy, at.z - 0.15 * MX_SHADOW_DEPTH_PER_BLOCK);
     }
     covered *= 0.25;
@@ -135,6 +151,30 @@ float mx_shadow(vec3 position, vec3 normal) {
     }
 #endif
 
+    return mix(1.0, mix(lit, 1.0, beyond), strength);
+}
+
+float mx_shadow(vec3 position, vec3 normal) {
+    return mx_shadow_from(position, mx_shadow_unbent(position), normal);
+}
+
+// mx_shadow with a single smoothed lookup, for what does not need soft edges: water, whose shadow shows only
+// where the bottom is hidden, and blurred again by the ripples.
+float mx_shadow_quick(vec3 position, vec3 normal) {
+    float strength = MxLightDir.w;
+    if (strength <= 0.0) return 1.0;
+#ifdef PIXEL_SHADOWS
+    position = mx_pixel_lock(position, normal);
+#endif
+    float range = MxShadowRange;
+    float distance_from_camera = length(position);
+    float beyond = smoothstep(range * 0.80, range * 0.97, distance_from_camera);
+    if (beyond >= 1.0) return 1.0;
+    float facing = clamp(dot(normal, MxLightDir.xyz), 0.0, 1.0);
+    float squeeze = (distance_from_camera / range) * MX_SHADOW_BEND + (1.0 - MX_SHADOW_BEND);
+    float texel_size = 2.0 * range * MxShadowTexel * squeeze / MX_SHADOW_FIT;
+    vec3 coord = mx_shadow_coord(position + normal * texel_size * (1.5 + 2.5 * (1.0 - facing)));
+    float lit = mx_shadow_tap(coord.xy, coord.z - 0.15 * MX_SHADOW_DEPTH_PER_BLOCK);
     return mix(1.0, mix(lit, 1.0, beyond), strength);
 }
 

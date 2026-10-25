@@ -87,8 +87,8 @@ vec3 glow(vec3 color) {
     if (MxBloom <= 0.0) {
         return color;
     }
-    // Five sizes were added together on the way up.
-    vec3 light = texture(colortex10, texCoord).rgb * 0.2;
+    // Four sizes were added together on the way up.
+    vec3 light = texture(colortex10, texCoord).rgb * 0.25;
     float level = max(light.r, max(light.g, light.b));
     vec3 shown = light * ((1.0 - exp(-level)) / max(level, 1.0e-4));
     float share = 0.18 * MxBloom;
