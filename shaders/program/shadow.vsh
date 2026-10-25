@@ -77,8 +77,7 @@ void main() {
     // Moved by the wind like the terrain itself.
     position = mx_wave(position, v_Type, mx_height_in_block(at_midBlock));
 
-    vec4 clip = shadowProjection * (shadowModelView * vec4(position + mx_feet_offset(), 1.0));
-    clip.xy = mx_shadow_bend(clip.xy);
+    vec4 clip = mx_shadow_clip(position);
     // Anything nearer the light than the map reaches is flattened onto its near side instead of being cut off:
     // it still has to cast its shadow.
     clip.z = max(clip.z, -0.9999);
