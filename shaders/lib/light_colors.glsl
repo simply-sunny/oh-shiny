@@ -24,11 +24,11 @@ const float MX_GRID_DEPTH = 64.0;
 vec3 mx_light_palette(int index) {
     if (index == 1) return vec3(255.0, 125.0, 55.0) / 255.0;   // fire, lava, furnaces
     if (index == 2) return vec3(95.0, 175.0, 255.0) / 255.0;   // soul fire
-    if (index == 3) return vec3(125.0, 230.0, 255.0) / 255.0;  // sea lanterns, conduits
+    if (index == 3) return vec3(125.0, 230.0, 255.0) / 255.0;  // sea lanterns, conduits, sculk
     if (index == 4) return vec3(190.0, 120.0, 255.0) / 255.0;  // amethyst
     if (index == 5) return vec3(235.0, 240.0, 255.0) / 255.0;  // end rods, beacons, froglights
     if (index == 6) return vec3(255.0, 75.0, 55.0) / 255.0;    // redstone
-    if (index == 7) return vec3(205.0, 95.0, 255.0) / 255.0;   // portals, crying obsidian, sculk
+    if (index == 7) return vec3(205.0, 95.0, 255.0) / 255.0;   // portals, crying obsidian
     if (index == 8) return vec3(150.0, 255.0, 120.0) / 255.0;  // copper torches and lanterns
     return vec3(255.0, 180.0, 110.0) / 255.0;                   // torches, lanterns, glowstone
 }
