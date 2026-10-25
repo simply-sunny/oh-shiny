@@ -8,6 +8,8 @@
 #define MOB_SHADOWS // Mobs, players and block entities cast shadows too.
 //#define PIXEL_SHADOWS // Shadows fall in whole texture pixels, with blocky edges.
 #define PIXEL_SHADOWS_SIZE 16 // How many shadow pixels across a block: 16 matches the game's textures. [4 8 16 32 64]
+//#define PIXEL_SHADOWS_SOFT // Pixels at a shadow's edge are partly dark, as much as they are covered.
+#define SHADOW_SOFTNESS 1 // How soft shadow edges are, without Pixel Shadows. Softer hides their shimmer as you move. [1 2 3 4]
 #define COLORED_LIGHT // Torches glow orange, soul fire blue, sea lanterns teal, and so on.
 #define HAND_LIGHT // A torch or other light held in the hand lights up what is around the player.
 #define AMBIENT_OCCLUSION // Corners and crevices are a little darker.

@@ -75,21 +75,52 @@ float mx_shadow(vec3 position, vec3 normal) {
     float depth = coord.z - 0.15 * MX_SHADOW_DEPTH_PER_BLOCK;
 
 #ifdef PIXEL_SHADOWS
-    // One pixel, one answer: a single lookup, rounded, so a pixel is either lit or in shadow.
-    float lit = step(0.5, mx_shadow_tap(coord.xy, depth));
+    // How much of the pixel is in shadow, from four lookups spread over it, a quarter pixel either way along the
+    // surface. The map's texels slide over the world as the player moves (it follows the player exactly; see
+    // shadowIntervalSize in settings.glsl), and a single lookup at the pixel's middle flips whenever an edge
+    // drawn into the map lands a texel this side or that of it, so edges crawl. How much of the pixel is
+    // covered hardly changes as they slide.
+    vec3 across = normalize(cross(normal, abs(normal.y) < 0.9 ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0)));
+    vec3 along = cross(normal, across);
+    float quarter = 0.25 / float(PIXEL_SHADOWS_SIZE);
+    float covered = 0.0;
+    for (int i = 0; i < 4; i++) {
+        vec2 corner = vec2(i & 1, i >> 1) * 2.0 - 1.0;
+        vec3 at = mx_shadow_coord(lifted + (across * corner.x + along * corner.y) * quarter);
+        covered += mx_shadow_tap(at.xy, at.z - 0.15 * MX_SHADOW_DEPTH_PER_BLOCK);
+    }
+    covered *= 0.25;
+#ifdef PIXEL_SHADOWS_SOFT
+    // A pixel at a shadow's edge is as dark as it is covered: edges are smoothed but stay in whole pixels.
+    float lit = covered;
 #else
+    // A pixel is either lit or in shadow, by which covers more of it.
+    float lit = step(0.5, covered);
+#endif
+#else
+    // Four smoothed lookups in a square give a soft edge about three texels wide, with no grain; Shadow Softness
+    // widens it, and from 2 up four more lookups between them keep it smooth. Further out a texel of the map
+    // covers more ground and a pixel of the screen less, so one smoothed lookup is already as soft as the four
+    // are near by, unless the edges are to be softer still: there they are what hides the map's texels sliding
+    // past as the player moves.
+    float reach = MxShadowTexel * 0.75 * float(SHADOW_SOFTNESS);
     float lit;
-    if (distance_from_camera < range * 0.45) {
-        // Four smoothed lookups in a square give a soft edge about three texels wide, with no grain.
-        float reach = MxShadowTexel * 0.75;
+    if (distance_from_camera < range * 0.45 || SHADOW_SOFTNESS > 1) {
         lit = mx_shadow_tap(coord.xy + vec2(-reach, -reach), depth)
             + mx_shadow_tap(coord.xy + vec2(reach, -reach), depth)
             + mx_shadow_tap(coord.xy + vec2(-reach, reach), depth)
             + mx_shadow_tap(coord.xy + vec2(reach, reach), depth);
+#if SHADOW_SOFTNESS > 1
+        float side = reach * 1.41;
+        lit += mx_shadow_tap(coord.xy + vec2(-side, 0.0), depth)
+             + mx_shadow_tap(coord.xy + vec2(side, 0.0), depth)
+             + mx_shadow_tap(coord.xy + vec2(0.0, -side), depth)
+             + mx_shadow_tap(coord.xy + vec2(0.0, side), depth);
+        lit *= 0.125;
+#else
         lit *= 0.25;
+#endif
     } else {
-        // Further out a texel of the map covers more ground and a pixel of the screen less, so one smoothed
-        // lookup is already as soft as the four are near by.
         lit = mx_shadow_tap(coord.xy, depth);
     }
 #endif

@@ -28,7 +28,8 @@ through Metallum and [Leadlight](https://github.com/ohjey/leadlight).
 Pick a quality preset (Iris calls it Profile): Low, Medium, High or Ultra. Medium is the default.
 
 **Pixel Shadows** makes shadows fall in whole texture pixels, with blocky edges; **Shadow Pixels** sets how many
-fit across a block. **Fog** lays a haze over the last part of what you can see (far terrain from
+fit across a block, and **Soft Pixel Edges** smooths their edges. **Shadow Softness** softens ordinary shadows, which also
+hides their shimmer as you move. **Fog** lays a haze over the last part of what you can see (far terrain from
 Distant Horizons or Voxy included), thickest far off and in the valleys; Off keeps fog only at the edge.
 
 Shadows cost the most. If the game runs slowly, turn off **Mob Shadows**, lower **Shadow Distance**, or turn
