@@ -16,8 +16,8 @@
 // World
 #define WATER_REFLECTIONS // Water mirrors the world around it.
 #define WAVING // Water ripples; leaves and plants sway.
-// A haze over the land, thickening with distance and most in the low ground. The higher, the nearer it starts:
-// at 30 it starts 70% of the render distance out. 0 is Off.
+// A haze over the land, thickening with distance and most in the low ground, over the last part of what is
+// drawn (Distant Horizons' or Voxy's far terrain too): at 20 the last 20%. 0 is Off.
 #define FOG_AMOUNT 0 // [0 10 20 30 40 50 60 70 80 90]
 
 // Image

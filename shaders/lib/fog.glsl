@@ -31,13 +31,14 @@ float mx_fog_amount(vec3 position) {
 }
 
 #if FOG_AMOUNT > 0
-// The Fog setting's haze: clear up to where it starts, the nearer the more Fog is set, then thickening with
-// distance as real air does, so that by the game's render distance three quarters of what is behind it is hidden
-// at sea level. Distant Horizons' and Voxy's far
-// terrain lies further still and fades into it without vanishing. It is thickest low down and thins with
-// height, so valleys fill with it while hills and mountains stand out above. `position`: relative to the eye.
+// The Fog setting's haze, over the last share of what is drawn that the setting names: Distant Horizons' or
+// Voxy's far terrain where there is some, the game's own render distance otherwise. Clear up to its start, then
+// thickening with distance as real air does, so that by the edge of what is drawn nine tenths of what is behind
+// it is hidden at sea level. It is thickest low down and thins with height, so valleys fill with it while hills
+// and mountains stand out above. `position`: relative to the eye.
 float mx_mist(vec3 position) {
-    float start = far * float(100 - FOG_AMOUNT) / 100.0;
+    float edge = mx_view_far();
+    float start = edge * float(100 - FOG_AMOUNT) / 100.0;
     float distance_to = length(position);
     float through = max(distance_to - start, 0.0);
     if (through <= 0.0) {
@@ -45,7 +46,7 @@ float mx_mist(vec3 position) {
     }
     const float sea_level = 63.0;
     const float thinning = 48.0;   // blocks over which it thins to about a third
-    float density = 1.4 / max(far - start, 16.0);
+    float density = 2.3 / max(edge - start, 16.0);
     // Its thickness averaged over the way from the eye to the point, which climbs or falls.
     float low = (cameraPosition.y - sea_level) / thinning;
     float rise = position.y / thinning;
