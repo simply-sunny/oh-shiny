@@ -56,11 +56,15 @@ void main() {
     fragColor = vec4(color.rgb * shade * texture(lightmap, light_map).rgb, color.a);
     return;
 #endif
+#ifdef MX_EMISSIVE
+    // The game adds glowing layers (eyes, and the emissive textures of Fresh Animations and the like) onto what
+    // is beneath them. So they are their texture's own color, as the game shows them: brightened, colors that
+    // add up past full run into white, and fogged towards the sky they would add the sky. Fog only fades them.
+    fragColor = vec4(color.rgb * (1.0 - mx_fog_amount(v_Position)), color.a);
+    return;
+#endif
     vec3 albedo = mx_to_linear(color.rgb);
 
-#ifdef MX_EMISSIVE
-    vec3 lit = albedo * 1.7;
-#else
 #ifdef MX_PARTICLE
     // Light it as if it faced halfway between straight up and the sun.
     vec3 normal = normalize(MxLightDir.xyz + vec3(0.0, 1.0, 0.0));
@@ -76,7 +80,6 @@ void main() {
 #endif
     float facing = mx_facing(normal, 0.0);
     vec3 lit = mx_lit(albedo, normal, v_Position, v_Light, facing, facing > 0.0 ? mx_shadow(v_Position, normal) : 1.0);
-#endif
 
     fragColor = vec4(mx_fogged(lit, v_Position, mx_fog_amount(v_Position)), color.a);
 }
