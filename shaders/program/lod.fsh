@@ -23,11 +23,6 @@ void main() {
     if (mx_dither(gl_FragCoord.xy) >= takeover) {
         discard;
     }
-#ifndef MX_TRANSLUCENT
-    if (v_Type == MX_BLOCK_WATER) {
-        discard;
-    }
-#endif
 
     // Turned to face the camera, for faces seen from behind.
     vec3 normal = normalize(v_Normal);
@@ -35,4 +30,11 @@ void main() {
         normal = -normal;
     }
     fragColor = mx_lod_color(v_Color, v_Position, normal, v_Light, v_Type);
+#ifndef MX_TRANSLUCENT
+    // Water comes here, in the opaque half, only with Distant Horizons' transparency set to Disabled, and then
+    // nothing is drawn under it: it is drawn as it would look, but solid.
+    if (v_Type == MX_BLOCK_WATER) {
+        fragColor.a = 1.0;
+    }
+#endif
 }
