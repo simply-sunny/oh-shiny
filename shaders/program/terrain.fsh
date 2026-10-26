@@ -123,6 +123,14 @@ void main() {
         float berry = smoothstep(0.15, 0.35, color.r - color.b) * smoothstep(0.55, 0.75, color.r);
         float level = v_Light.x;
         lit += albedo * level * level * 3.0 * berry;
+    } else if (type == MX_BLOCK_GLOW_SPECKS) {
+        // Only the specks glow: the strongly colored texels, not the grey stone between them, which glowing
+        // along with them turned the whole block a flat white. A speck's paler rim glows less than its middle, so
+        // each fades into the stone instead of ending in a hard edge.
+        float chroma = max(color.r, max(color.g, color.b)) - min(color.r, min(color.g, color.b));
+        float speck = smoothstep(0.15, 0.45, chroma);
+        float level = v_Light.x;
+        lit += albedo * level * level * 3.0 * speck;
     }
 
     fragColor = vec4(mx_fogged(lit, v_Position, fog), color.a);

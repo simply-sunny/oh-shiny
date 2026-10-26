@@ -87,8 +87,7 @@ LIGHTS = {
     5: ("End rods, beacons, froglights: white",
         ["end_rod", "beacon", "ochre_froglight", "verdant_froglight", "pearlescent_froglight", "dragon_egg"]),
     6: ("Redstone: red",
-        ["redstone_torch:lit=true", "redstone_wall_torch:lit=true", "redstone_lamp:lit=true", "redstone_ore:lit=true",
-         "deepslate_redstone_ore:lit=true"]),
+        ["redstone_torch:lit=true", "redstone_wall_torch:lit=true", "redstone_lamp:lit=true"]),
     7: ("Portals, crying obsidian: violet",
         ["nether_portal", "end_portal", "end_gateway", "crying_obsidian", "respawn_anchor", "enchanting_table"]),
     8: ("Copper torches and lanterns: green",
@@ -98,6 +97,10 @@ LIGHTS = {
 # 10120 + the place of their light's color: blocks of which only a part gives off light.
 GLOW_BERRIES = {0: ("Glow berries: only the berries glow; the vines sway like leaves",
                     ["cave_vines:berries=true", "cave_vines_plant:berries=true"])}
+
+# 10140 + the place of their light's color: blocks of which only the colored specks glow, not the stone around them.
+GLOW_SPECKS = {6: ("Lit redstone ore: only its red specks glow",
+                   ["redstone_ore:lit=true", "deepslate_redstone_ore:lit=true"])}
 
 
 def wrap(blocks):
@@ -113,7 +116,8 @@ def wrap(blocks):
 
 def main():
     text = f"""# oh shiny! block ids. Written by tools/blocks.py; edit that and run it again. Must agree with lib/block_ids.glsl:
-# 10000 + the kind of block, 10100 and up for blocks that give off light, 10120 and up for glow berries. Names
+# 10000 + the kind of block, 10100 and up for blocks that give off light, 10120 and up for glow berries, 10140
+# and up for blocks that glow in specks. Names
 # that a Minecraft version does not have are skipped by Iris.
 
 # Water and lava.
@@ -145,6 +149,8 @@ block.10007={wrap(metal())}
         text += f"\n# {comment}\nblock.{10100 + index}={wrap(blocks)}\n"
     for index, (comment, blocks) in GLOW_BERRIES.items():
         text += f"\n# {comment}\nblock.{10120 + index}={wrap(blocks)}\n"
+    for index, (comment, blocks) in GLOW_SPECKS.items():
+        text += f"\n# {comment}\nblock.{10140 + index}={wrap(blocks)}\n"
     (SHADERS / "block.properties").write_text(text)
 
     # Items share their blocks' names, without the block's state; wall torches and the like are no items, and
