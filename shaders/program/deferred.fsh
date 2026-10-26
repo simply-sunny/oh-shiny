@@ -5,6 +5,7 @@ const int colortex0Format = RGB10_A2;
 const int colortex5Format = RGB10_A2;
 const int colortex6Format = RGBA16F;
 const int colortex7Format = RGBA16F;
+const int colortex9Format = RGBA16F;
 const int colortex10Format = R11F_G11F_B10F;
 const int colortex11Format = R11F_G11F_B10F;
 const int colortex12Format = R11F_G11F_B10F;

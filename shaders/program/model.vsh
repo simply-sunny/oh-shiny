@@ -2,6 +2,7 @@
 // the hand, particles.
 
 #include "/lib/frame.glsl"
+#include "/lib/taa.glsl"
 
 out vec4 v_Color;
 out vec2 v_TexCoord;
@@ -19,5 +20,5 @@ void main() {
     vec3 view = (gl_ModelViewMatrix * gl_Vertex).xyz;
     v_Position = mat3(gbufferModelViewInverse) * view;
     v_Normal = mat3(gbufferModelViewInverse) * (gl_NormalMatrix * gl_Normal);
-    gl_Position = gl_ProjectionMatrix * vec4(view, 1.0);
+    gl_Position = mx_jitter(gl_ProjectionMatrix * vec4(view, 1.0));
 }

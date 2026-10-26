@@ -4,6 +4,7 @@
 #define MX_LOD_PASS
 
 #include "/lib/frame.glsl"
+#include "/lib/taa.glsl"
 #include "/lib/block_ids.glsl"
 
 uniform mat4 dhProjection;
@@ -33,5 +34,5 @@ void main() {
     vec3 view = (gl_ModelViewMatrix * gl_Vertex).xyz;
     v_Position = mat3(gbufferModelViewInverse) * view;
     v_Normal = normalize(mat3(gbufferModelViewInverse) * (mat3(gl_ModelViewMatrix) * gl_Normal));
-    gl_Position = dhProjection * vec4(view, 1.0);
+    gl_Position = mx_jitter(dhProjection * vec4(view, 1.0));
 }

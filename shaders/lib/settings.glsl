@@ -26,6 +26,9 @@
 // Image
 #define BLOOM // A soft glow around bright things.
 #define SMOOTH_EDGES // Blends away the stair steps along edges.
+//#define FXAA // FXAA: smooths the stair steps along every edge in the picture. Replaces Smooth Edges.
+//#define TAA // Temporal anti-aliasing: each frame shifted a little, the frames blended. The smoothest edges.
+#define SHARPENING 0 // Contrast adaptive sharpening, for TAA's softness above all. 0 is Off. [0 10 20 30 40 50 60 70 80 90 100]
 
 // Color grading (lib/grade.glsl). 0 is Normal throughout.
 #define GRADE_EXPOSURE 0 // Hundredths of a stop. [-100 -75 -50 -25 0 25 50 75 100]

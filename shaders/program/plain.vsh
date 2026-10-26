@@ -1,6 +1,7 @@
 // What keeps the game's own look: lines, the sun and moon, rain and snow, beacon beams, enchantment glint.
 
 #include "/lib/frame.glsl"
+#include "/lib/taa.glsl"
 
 out vec4 v_Color;
 out vec2 v_TexCoord;
@@ -14,5 +15,5 @@ void main() {
     v_LightMap = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
     vec3 view = (gl_ModelViewMatrix * gl_Vertex).xyz;
     v_Position = mat3(gbufferModelViewInverse) * view;
-    gl_Position = gl_ProjectionMatrix * vec4(view, 1.0);
+    gl_Position = mx_jitter(gl_ProjectionMatrix * vec4(view, 1.0));
 }

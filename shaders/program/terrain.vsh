@@ -2,6 +2,7 @@
 // (gbuffers_water).
 
 #include "/lib/frame.glsl"
+#include "/lib/taa.glsl"
 #include "/lib/block_ids.glsl"
 #include "/lib/waving.glsl"
 #include "/lib/shadow.glsl"
@@ -31,7 +32,7 @@ void main() {
     vec3 position = mat3(gbufferModelViewInverse) * view;
     vec3 waved = mx_wave(position, v_Type, mx_height_in_block(at_midBlock));
     view += mat3(gbufferModelView) * (waved - position);
-    gl_Position = gl_ProjectionMatrix * vec4(view, 1.0);
+    gl_Position = mx_jitter(gl_ProjectionMatrix * vec4(view, 1.0));
 
     v_Position = waved;
     v_ShadowUnbent = mx_shadow_unbent(waved);

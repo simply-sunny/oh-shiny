@@ -54,6 +54,8 @@ COMPOSITES = [
     ("effects.fsh", "6,15", []),
     ("effects_blur.fsh", "7", []),
     ("effects_apply.fsh", "0", []),
+    # With TAA on, this frame blended into the frames before it (kept in colortex9).
+    ("taa.fsh", "0,9", []),
     # The glow: the picture at quarter size, three steps down, three steps back up. final.fsh lays it over the
     # picture.
     ("bloom_prefilter.fsh", "10", []),
@@ -75,6 +77,7 @@ ONLY_WITH = {
     "effects.fsh": "AMBIENT_OCCLUSION || SUN_RAYS",
     "effects_blur.fsh": "AMBIENT_OCCLUSION || SUN_RAYS",
     "effects_apply.fsh": "AMBIENT_OCCLUSION || SUN_RAYS",
+    "taa.fsh": "TAA",
     "bloom_prefilter.fsh": "BLOOM",
     "bloom_downsample.fsh": "BLOOM",
     "bloom_upsample.fsh": "BLOOM",
