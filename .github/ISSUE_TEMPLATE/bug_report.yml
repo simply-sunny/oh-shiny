@@ -1,0 +1,55 @@
+name: Bug report
+description: Something doesn't look or work as expected.
+labels: [bug]
+body:
+  - type: input
+    id: minecraft
+    attributes:
+      label: Minecraft version
+      placeholder: "26.3"
+    validations:
+      required: true
+  - type: input
+    id: pack-version
+    attributes:
+      label: oh shiny version
+      placeholder: "1.5.1"
+    validations:
+      required: true
+  - type: input
+    id: loader
+    attributes:
+      label: Shader loader and version
+      description: Iris and Sodium, or Metallum and Leadlight.
+      placeholder: "Iris 1.10.0, Sodium 0.7.0"
+    validations:
+      required: true
+  - type: input
+    id: gpu
+    attributes:
+      label: GPU and OS
+      placeholder: "M1 Pro, macOS 27.2"
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What you expected, and what you saw instead. A screenshot helps.
+    validations:
+      required: true
+  - type: textarea
+    id: settings
+    attributes:
+      label: Shader settings
+      description: The preset, and any options you changed.
+  - type: textarea
+    id: mods
+    attributes:
+      label: Other mods and resource packs
+      description: Especially Distant Horizons, Voxy, or other rendering mods.
+  - type: textarea
+    id: log
+    attributes:
+      label: Log
+      description: Attach `logs/latest.log`, or paste a link.
