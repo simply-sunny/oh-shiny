@@ -1,4 +1,4 @@
-# oh shiny!
+# oh shiny
 
 A shader pack for Minecraft 26.1 to 26.3, made from the shaders that used to be built into
 [Metallum Extra](https://github.com/ohjey/metallum-extra). Runs on Iris with Sodium, and on Apple silicon
@@ -52,4 +52,4 @@ Stage files (Distant Horizons' `dh_*` too) come from `tools/stages.py` and `bloc
 
 ## License
 
-MIT
+MIT, see [LICENSE](LICENSE). Copyright © 2026 Metallum Extra contributors.
