@@ -115,7 +115,7 @@ def wrap(blocks):
 
 
 def main():
-    text = f"""# oh shiny! block ids. Written by tools/blocks.py; edit that and run it again. Must agree with lib/block_ids.glsl:
+    text = f"""# oh shiny block ids. Written by tools/blocks.py; edit that and run it again. Must agree with lib/block_ids.glsl:
 # 10000 + the kind of block, 10100 and up for blocks that give off light, 10120 and up for glow berries, 10140
 # and up for blocks that glow in specks. Names
 # that a Minecraft version does not have are skipped by Iris.
@@ -155,7 +155,7 @@ block.10007={wrap(metal())}
 
     # Items share their blocks' names, without the block's state; wall torches and the like are no items, and
     # Iris skips names it does not know.
-    items = """# oh shiny! item ids. Written by tools/blocks.py; edit that and run it again. A light held in the hand
+    items = """# oh shiny item ids. Written by tools/blocks.py; edit that and run it again. A light held in the hand
 # (lib/lighting.glsl) has the id of its block in block.properties, 10100 + the color of its light.
 """
     for index, (comment, blocks) in LIGHTS.items():
