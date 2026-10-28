@@ -2,6 +2,12 @@
 
 All notable changes to oh shiny are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
+## [1.5.2] - 2026-10-28
+
+### Added
+
+- **Pack icon**: oh shiny now has a logo, shown in the shader list in Iris.
+
 ## [1.5.1] - 2026-10-26
 
 ### Added

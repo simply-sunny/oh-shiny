@@ -1,3 +1,5 @@
+<p align="center"><img src="branding/icon.png" width="128" alt="oh shiny logo: a half iron, half gold ingot with sparkles"></p>
+
 <p align="center"><img src="screenshots/sunset.webp" width="720" alt="A sunset over the sea with oh shiny"></p>
 
 <h1 align="center">oh shiny</h1>

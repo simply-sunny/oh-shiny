@@ -20,6 +20,7 @@ def main():
             if path.is_file() and path.name != ".DS_Store":
                 archive.write(path, path.relative_to(PACK).as_posix())
         archive.write(PACK / "LICENSE", "LICENSE")
+        archive.write(PACK / "branding" / "icon.png", "pack.png")
     print(output.relative_to(PACK))
 
 

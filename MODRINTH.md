@@ -20,7 +20,7 @@ This file is the source of truth for the Modrinth project settings, version meta
 | Wiki / docs | *(none)* |
 | Discord | *(none)* |
 | Donation links | *(none)* |
-| Icon | *(none yet)* |
+| Icon | `branding/icon.png` (512×512, also the pack icon in the zip) |
 | Gallery | Sunset (featured), Moon, Night sky |
 
 ## Version metadata
@@ -29,9 +29,10 @@ Upload one Modrinth version per release zip, version number as in `VERSION`, cha
 
 | File | Version ID | Modrinth `game_versions` |
 | --- | --- | --- |
+| `oh shiny 1.5.2.zip` | *(not uploaded yet)* | `26.1`, `26.1.1`, `26.1.2`, `26.2`, `26.3` |
 | `oh shiny! 1.5.1.zip` | `U2kVimHR` | `26.1`, `26.1.1`, `26.1.2`, `26.2`, `26.3` |
 
-Version name format: `oh shiny! 1.5.1`. Versions before 1.5.1 are on GitHub Releases only.
+Version name format: `oh shiny! 1.5.2`. Versions before 1.5.1 are on GitHub Releases only.
 
 ---
 
