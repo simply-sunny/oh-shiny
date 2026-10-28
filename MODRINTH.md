@@ -9,7 +9,7 @@ This file is the source of truth for the Modrinth project settings, version meta
 | Title | **oh shiny!** |
 | Slug | `oh-shiny-shaders` (`oh-shiny` belongs to another author's mod) |
 | Project type | Shader |
-| Project ID | `1YIPfAv7` (in review as of 2026-10-27) |
+| Project ID | `1YIPfAv7` (rejected 2026-10-28: Forks and Reuploads, needs proof of permission or divergence) |
 | Summary | A Minecraft shader pack derived from ohjey’s Metallum Extra shaders, with colored lighting, soft shadows, reflective water, and a cinematic sky. |
 | License | MIT |
 | Environment | Client-side only |
@@ -39,13 +39,24 @@ Version name format: `oh shiny! 1.5.1`. Versions before 1.5.1 are on GitHub Rele
 
 A shader pack for Minecraft 26.1–26.3, with colored lighting, soft shadows, reflective water, and a cinematic sky.
 
-## Credits
+## Content Disclosures
 
-The original shaders were created by **[ohjey](https://github.com/ohjey)**. oh shiny! is derived from the shaders formerly built into Metallum Extra. Credit for that original work belongs to them.
+- **Source work:** the shaders formerly built into [Metallum Extra](https://github.com/ohjey/metallum-extra) by **[ohjey](https://github.com/ohjey)**, licensed under the MIT License. Credit for that original work belongs to them.
+- **This pack:** standalone adaptation and ongoing development by **[simply-sunny](https://github.com/simply-sunny)**.
+- **Permission:** ohjey gave explicit permission to distribute oh shiny! on Modrinth and CurseForge. Proof: [Discord screenshot](https://github.com/simply-sunny/oh-shiny/blob/main/docs/permission.png)
+- **License:** distributed under the **MIT License**. The original copyright notice, “Copyright (c) 2026 Metallum Extra contributors,” and full license are preserved in the downloadable pack.
 
-Standalone adaptation and ongoing development: **[simply-sunny](https://github.com/simply-sunny)**. Published with the original author’s permission.
+### Changes from the original
 
-Distributed under the **MIT License**. The original copyright notice, “Copyright (c) 2026 Metallum Extra contributors,” and full license are preserved in the downloadable pack.
+- Standalone shader pack with its own settings screen and Low, Medium, High and Ultra presets
+- TAA, FXAA and sharpening, plus adjustable color grading
+- Pixel Shadows, a single shadow blur setting, and shadows that stay put as you move
+- Distant Horizons and Voxy support
+- Sun ray strength options, height-based fog, and under-water sun bending
+- Performance work on water, shadows, ambient occlusion and glow
+- Lit redstone ore glow and other lighting changes
+
+Full history: [commits](https://github.com/simply-sunny/oh-shiny/commits/main) and [CHANGELOG](https://github.com/simply-sunny/oh-shiny/blob/main/CHANGELOG.md).
 
 ## Features
 

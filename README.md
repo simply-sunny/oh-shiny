@@ -114,4 +114,4 @@ Logs are in `.minecraft/logs/latest.log`. Include the log, a screenshot, your GP
 
 MIT, see [LICENSE](LICENSE). Copyright © 2026 Metallum Extra contributors.
 
-Credits: ohjey (the original shaders, from Metallum Extra), simply-sunny (the standalone pack, its settings and releases). Minecraft is a trademark of Mojang Studios.
+Content disclosures: ohjey (the original shaders, from [Metallum Extra](https://github.com/ohjey/metallum-extra), MIT), simply-sunny (the standalone pack, its settings and releases). Minecraft is a trademark of Mojang Studios.
