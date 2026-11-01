@@ -2,7 +2,7 @@
 
 <p align="center"><img src="screenshots/sunset.webp" width="720" alt="A sunset over the sea with oh shiny"></p>
 
-<h1 align="center">oh shiny</h1>
+<h1 align="center">oh shiny!</h1>
 
 <p align="center">A shader pack with colored light, soft shadows and reflective water.<br>Iris &amp; Leadlight &nbsp;|&nbsp; 26.1 – 26.3</p>
 
