@@ -29,10 +29,11 @@ Upload one Modrinth version per release zip, version number as in `VERSION`, cha
 
 | File | Version ID | Modrinth `game_versions` |
 | --- | --- | --- |
+| `oh shiny! 1.5.3.zip` | `C3cDfb3J` | `26.1`, `26.1.1`, `26.1.2`, `26.2`, `26.3` |
 | `oh shiny 1.5.2.zip` | `TLPia51L` | `26.1`, `26.1.1`, `26.1.2`, `26.2`, `26.3` |
 | `oh shiny! 1.5.1.zip` | `U2kVimHR` | `26.1`, `26.1.1`, `26.1.2`, `26.2`, `26.3` |
 
-Version name format: `oh shiny! 1.5.2`. Versions before 1.5.1 are on GitHub Releases only.
+Version name format: `oh shiny! 1.5.3`. Versions before 1.5.1 are on GitHub Releases only.
 
 ---
 
