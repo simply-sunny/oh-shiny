@@ -76,10 +76,16 @@ vec4 mx_hand_light(vec3 position) {
 }
 #endif
 
+// How the ripples overhead change the sunlight at a point: seen from under water, sunlight arrives through the
+// surface.
+float mx_caustic_at(vec3 position) {
+    return MxUnderwater ? mx_caustic((position + MxCameraPos.xyz).xz, MxCameraPos.w) : 1.0;
+}
+
 // `albedo`: linear surface color. `normal`: world orientation. `position`: relative to the eye. `light`: block
 // light and sky light, each 0..1. `facing`: from mx_facing. `shadow`: 1 where the sun or moon reaches, 0 where
-// something is in the way.
-vec3 mx_lit(vec3 albedo, vec3 normal, vec3 position, vec2 light, float facing, float shadow) {
+// something is in the way. `caustic`: from mx_caustic_at.
+vec3 mx_lit(vec3 albedo, vec3 normal, vec3 position, vec2 light, float facing, float shadow, float caustic) {
     // Sky light falls off more gently than the game's curve alone, or shade under trees and shallow water
     // would be far darker than the open ground beside it.
     float sky = mix(mx_light_curve(light.y), light.y * light.y, 0.5);
@@ -99,12 +105,7 @@ vec3 mx_lit(vec3 albedo, vec3 normal, vec3 position, vec2 light, float facing, f
     // Direct light. Where no sky light reaches at all (deep caves) there is none, whatever the shadow map says:
     // the map only covers the ground near the player and cannot know about a mountain far overhead.
     float open = smoothstep(0.08, 0.5, light.y);
-    float direct_amount = facing * shadow * open;
-    if (MxUnderwater) {
-        // Seen from under water, sunlight arrives through the surface.
-        direct_amount *= mx_caustic((position + MxCameraPos.xyz).xz, MxCameraPos.w);
-    }
-    vec3 direct = MxLightColor.rgb * direct_amount;
+    vec3 direct = MxLightColor.rgb * facing * shadow * open * caustic;
 
     // Light that comes from all around has no direction to tell a block's sides apart by: with the sun
     // straight overhead, or by torchlight in a cave, every wall would be the same flat tone. So the sides
@@ -124,6 +125,10 @@ vec3 mx_lit(vec3 albedo, vec3 normal, vec3 position, vec2 light, float facing, f
     vec3 total = direct + ambient + glow + MxMinAmbient.rgb;
     total *= 1.0 - clamp(MxMinAmbient.w, 0.0, 0.85);
     return albedo * total;
+}
+
+vec3 mx_lit(vec3 albedo, vec3 normal, vec3 position, vec2 light, float facing, float shadow) {
+    return mx_lit(albedo, normal, position, light, facing, shadow, mx_caustic_at(position));
 }
 
 // The sun's or moon's highlight on a surface. `gloss` 0 is matte, 1 a mirror-like polish. `tint` colors the

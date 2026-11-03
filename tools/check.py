@@ -24,7 +24,7 @@ VARIANTS = {
     "pixel shadows": [PIXEL_SHADOWS, ("#define PIXEL_SHADOWS_SIZE 16", "#define PIXEL_SHADOWS_SIZE 8"),
                       ("//#define PIXEL_SHADOWS_SOFT", "#define PIXEL_SHADOWS_SOFT")],
     "soft shadows": [("#define SHADOW_SOFTNESS 1", "#define SHADOW_SOFTNESS 3"), ("//#define SUN_RAYS", "#define SUN_RAYS"),
-                     ("#define SUN_RAYS_STRENGTH 3", "#define SUN_RAYS_STRENGTH 1")],
+                     ("#define SUN_RAYS_STRENGTH 2", "#define SUN_RAYS_STRENGTH 1")],
     "everything on": [("//#define SUN_RAYS", "#define SUN_RAYS"), PIXEL_SHADOWS, ("#define FOG_AMOUNT 0", "#define FOG_AMOUNT 50"),
                       ("//#define FXAA", "#define FXAA"), ("//#define TAA", "#define TAA"),
                       ("#define SHARPENING 0", "#define SHARPENING 40")],

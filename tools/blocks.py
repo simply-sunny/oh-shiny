@@ -22,14 +22,18 @@ LEAVES = ("%leaves vine weeping_vines weeping_vines_plant twisting_vines twistin
 
 PLANTS = ("%small_flowers %saplings %crops short_grass grass fern dead_bush bush firefly_bush short_dry_grass "
           "tall_dry_grass sweet_berry_bush nether_wart brown_mushroom red_mushroom crimson_fungus "
-          "warped_fungus crimson_roots warped_roots nether_sprouts hanging_roots seagrass cactus_flower torchflower_crop pitcher_crop melon_stem pumpkin_stem "
+          "warped_fungus crimson_roots warped_roots nether_sprouts hanging_roots cactus_flower torchflower_crop pitcher_crop melon_stem pumpkin_stem "
           "attached_melon_stem attached_pumpkin_stem wheat carrots potatoes beetroots").split()
 
 # Two-block plants: the lower half sways at its top as far as the upper half does at its bottom, so the two stay
 # joined. (Sugar cane and dripleaf stems, stacked from whole blocks, stay still: each block would sway alone.)
-PLANTS_LOWER = [f"{plant}:half=lower" for plant in TALL_PLANTS] + ["tall_seagrass:half=lower", "small_dripleaf:half=lower"]
+PLANTS_LOWER = [f"{plant}:half=lower" for plant in TALL_PLANTS] + ["small_dripleaf:half=lower"]
 
-PLANTS_UPPER = [f"{plant}:half=upper" for plant in TALL_PLANTS] + ["tall_seagrass:half=upper", "small_dripleaf:half=upper"]
+PLANTS_UPPER = [f"{plant}:half=upper" for plant in TALL_PLANTS] + ["small_dripleaf:half=upper"]
+
+SEA_PLANTS = ["seagrass", "tall_seagrass:half=lower"]
+
+SEA_PLANTS_UPPER = ["tall_seagrass:half=upper"]
 
 
 def shiny():
@@ -115,7 +119,7 @@ def wrap(blocks):
 
 
 def main():
-    text = f"""# oh shiny block ids. Written by tools/blocks.py; edit that and run it again. Must agree with lib/block_ids.glsl:
+    text = f"""# oh shiny! block ids. Written by tools/blocks.py; edit that and run it again. Must agree with lib/block_ids.glsl:
 # 10000 + the kind of block, 10100 and up for blocks that give off light, 10120 and up for glow berries, 10140
 # and up for blocks that glow in specks. Names
 # that a Minecraft version does not have are skipped by Iris.
@@ -136,6 +140,12 @@ block.10005={wrap(PLANTS_UPPER)}
 # The lower half of two-block plants: its top sways, as far as the upper half's bottom.
 block.10010={wrap(PLANTS_LOWER)}
 
+# Seagrass, and the lower half of tall seagrass: leans with the current, not in the wind.
+block.10011={wrap(SEA_PLANTS)}
+
+# The upper half of tall seagrass: all of it leans, from where the lower half ends.
+block.10012={wrap(SEA_PLANTS_UPPER)}
+
 # Smooth and polished things: catch the sun.
 block.10006={wrap(shiny())}
 
@@ -155,7 +165,7 @@ block.10007={wrap(metal())}
 
     # Items share their blocks' names, without the block's state; wall torches and the like are no items, and
     # Iris skips names it does not know.
-    items = """# oh shiny item ids. Written by tools/blocks.py; edit that and run it again. A light held in the hand
+    items = """# oh shiny! item ids. Written by tools/blocks.py; edit that and run it again. A light held in the hand
 # (lib/lighting.glsl) has the id of its block in block.properties, 10100 + the color of its light.
 """
     for index, (comment, blocks) in LIGHTS.items():

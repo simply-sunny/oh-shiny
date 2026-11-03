@@ -59,7 +59,42 @@ vec3 mx_feet_offset() {
     return gbufferModelViewInverse[3].xyz;
 }
 
-// The game's sunrise and sunset color for a sun at `height` (-1..1) on its untilted path.
+// Sunset Color: the sky with the sun going under, at the horizon and up, and the low sun's light on the ground.
+#if SUNSET_COLOR == 1 // Orange
+const vec3 MX_SUNSET_UNDER = vec3(0.90, 0.38, 0.25);
+const vec3 MX_SUNSET_HORIZON = vec3(1.0, 0.50, 0.25);
+const vec3 MX_SUNSET_UP = vec3(1.0, 0.72, 0.38);
+const vec3 MX_SUNSET_LIGHT = vec3(1.0, 0.52, 0.28);
+#elif SUNSET_COLOR == 2 // Gold
+const vec3 MX_SUNSET_UNDER = vec3(0.95, 0.55, 0.30);
+const vec3 MX_SUNSET_HORIZON = vec3(1.0, 0.70, 0.35);
+const vec3 MX_SUNSET_UP = vec3(1.0, 0.85, 0.50);
+const vec3 MX_SUNSET_LIGHT = vec3(1.0, 0.68, 0.36);
+#elif SUNSET_COLOR == 3 // Red
+const vec3 MX_SUNSET_UNDER = vec3(0.70, 0.16, 0.20);
+const vec3 MX_SUNSET_HORIZON = vec3(0.95, 0.28, 0.20);
+const vec3 MX_SUNSET_UP = vec3(1.0, 0.55, 0.30);
+const vec3 MX_SUNSET_LIGHT = vec3(1.0, 0.38, 0.25);
+#elif SUNSET_COLOR == 4 // Purple
+const vec3 MX_SUNSET_UNDER = vec3(0.58, 0.38, 0.85);
+const vec3 MX_SUNSET_HORIZON = vec3(0.85, 0.45, 0.75);
+const vec3 MX_SUNSET_UP = vec3(1.0, 0.65, 0.65);
+const vec3 MX_SUNSET_LIGHT = vec3(0.82, 0.52, 0.90);
+#elif SUNSET_COLOR == 5 // Blue
+const vec3 MX_SUNSET_UNDER = vec3(0.40, 0.50, 0.90);
+const vec3 MX_SUNSET_HORIZON = vec3(0.60, 0.65, 0.95);
+const vec3 MX_SUNSET_UP = vec3(0.95, 0.80, 0.70);
+const vec3 MX_SUNSET_LIGHT = vec3(0.62, 0.72, 1.0);
+#else // Pink
+const vec3 MX_SUNSET_UNDER = vec3(0.88, 0.50, 0.62);
+const vec3 MX_SUNSET_HORIZON = vec3(1.0, 0.60, 0.56);
+const vec3 MX_SUNSET_UP = vec3(1.0, 0.78, 0.50);
+const vec3 MX_SUNSET_LIGHT = vec3(1.0, 0.58, 0.40);
+#endif
+
+// The sunrise and sunset color for a sun at `height` (-1..1) on its untilted path, with the game's own timing and
+// strength. Not the game's color, which ends in a deep red, blood red once in linear light: by default gold with the
+// sun up, coral at the horizon, rose as it goes under, like the real thing.
 vec4 mx_sunset_color(float height) {
     if (height < -0.4 || height > 0.4) {
         return vec4(0.0);
@@ -67,7 +102,9 @@ vec4 mx_sunset_color(float height) {
     float g = height / 0.4 * 0.5 + 0.5;
     float alpha = 1.0 - (1.0 - sin(g * 3.14159265)) * 0.99;
     alpha *= alpha;
-    return vec4(g * 0.3 + 0.7, g * g * 0.7 + 0.2, 0.2, alpha);
+    vec3 color = g < 0.5 ? mix(MX_SUNSET_UNDER, MX_SUNSET_HORIZON, g * 2.0)
+                         : mix(MX_SUNSET_HORIZON, MX_SUNSET_UP, g * 2.0 - 1.0);
+    return vec4(color, alpha);
 }
 
 void mx_setup() {
@@ -88,12 +125,12 @@ void mx_setup() {
         MxLightColor = vec4(0.0);
         MxSunDir = vec4(0.0, 1.0, 0.0, 0.0);
     } else if (sun.y > -0.06) {
-        // Low sun is orange and weaker, having more air to come through; high sun is a warm white, which
-        // against the blue of the light from the sky is what tells sunlit ground from shade.
+        // Low sun takes the sunset's color and is weaker, having more air to come through; high sun is a warm white,
+        // which against the blue of the light from the sky is what tells sunlit ground from shade.
         float high = smoothstep(0.0, 0.4, sun.y);
         float strength = mix(1.9, 3.3, high) * sunUp * clearSky;
         MxLightDir = vec4(sun, sunUp * clearSky);
-        MxLightColor = vec4(strength, mix(0.56, 0.93, high) * strength, mix(0.30, 0.80, high) * strength, day);
+        MxLightColor = vec4(mix(MX_SUNSET_LIGHT, vec3(1.0, 0.93, 0.80), high) * strength, day);
         MxSunDir = vec4(sun, sunUp);
     } else {
         float strength = 0.34 * moonUp * clearSky;

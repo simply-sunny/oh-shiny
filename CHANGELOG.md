@@ -1,12 +1,24 @@
 # Changelog
 
-All notable changes to oh shiny are documented here. This project follows [Semantic Versioning](https://semver.org/).
+All notable changes to oh shiny! are documented here. This project follows [Semantic Versioning](https://semver.org/).
+
+## [1.5.3] - 2026-11-01
+
+### Changed
+
+- **Sun rays**: no more grain, sharper shafts close to you, and no bright halo around leaves and ridges.
+- **Seagrass**: leans slowly with the current instead of fluttering in the wind, which tore its blades. Softer shadows and caustics on it, so no more neon stripes or near-black lower halves.
+- **Sunsets**: gold, coral and rose instead of blood red, and the low sun's light on the ground is pinker too. A new Sunset Color setting on the Color screen also offers orange, gold, red, purple and blue.
+- **Settings**: grouped into Lighting, Environment, Camera, Anti-aliasing, Color and Color Grading screens, with shadow distance in blocks and the sun tilt in degrees. Shadow Color and Highlight Color are now Dark Tint and Bright Tint, and Shadows and Highlights under Color Grading are now Dark Areas and Bright Areas. The edge-smoothing options say when to use each.
+- **Sun Ray Strength**: defaults to Strong instead of Insane.
+- **Name**: back to `oh shiny!`, the zip included.
+- **Icon**: a half iron, half gold ingot with glitter on crying obsidian, with a heavy vignette.
 
 ## [1.5.2] - 2026-10-28
 
 ### Added
 
-- **Pack icon**: oh shiny now has a logo, shown in the shader list in Iris.
+- **Pack icon**: oh shiny! now has a logo, shown in the shader list in Iris.
 
 ## [1.5.1] - 2026-10-26
 

@@ -41,6 +41,18 @@ vec3 mx_wave(vec3 position, int type, float height) {
         return position;
     }
 
+    if (mx_is_sea_plant(type)) {
+        // Moved by water, not wind: a slow lean with the current, the whole plant together. Its blades cross and
+        // sit close, and a flutter that differs from one corner of a blade to the next slides them through each
+        // other, which showed as slits and tears.
+        float lean = sin(world.x * 0.25 + world.z * 0.18 + time * 0.7) + 0.4 * sin(world.x * 0.11 - world.z * 0.23 + time * 1.1);
+        // The upper half's bottom meets the lower half's top.
+        float amount = type == MX_BLOCK_SEA_PLANT_UPPER ? 0.06 + 0.08 * height : 0.06 * max(height, 0.0);
+        position.x += lean * amount;
+        position.z += lean * 0.6 * amount;
+        return position;
+    }
+
     if (type == MX_BLOCK_LEAVES || mx_is_plant(type)) {
         // A slow sway shared by everything nearby, with a faster flutter on top; stronger in the rain.
         float wind = 1.0 + 1.5 * MxSkyAmbient.w;

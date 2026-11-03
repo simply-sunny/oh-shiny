@@ -34,4 +34,12 @@ float mx_dither(vec2 pixel) {
     return fract(52.9829189 * fract(dot(pixel, vec2(0.06711056, 0.00583715))));
 }
 
+// An ordered pattern, 0..1, with each of sixteen values once in every 4x4 square. Averaging such a square
+// (effects_blur.fsh) leaves no grain: a march stepped by this reads as sixteen times its samples.
+float mx_bayer4(vec2 pixel) {
+    const float PATTERN[16] = float[16](0.0, 8.0, 2.0, 10.0, 12.0, 4.0, 14.0, 6.0, 3.0, 11.0, 1.0, 9.0, 15.0, 7.0, 13.0, 5.0);
+    ivec2 cell = ivec2(pixel) & 3;
+    return (PATTERN[cell.y * 4 + cell.x] + 0.5) / 16.0;
+}
+
 #endif

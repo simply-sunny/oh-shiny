@@ -64,15 +64,17 @@ vec3 sun_rays(vec3 direction, float distance_to) {
     float range = MxShadowRange;
     float end = min(distance_to, range);
     const int STEPS = 14;
-    float stride = end / float(STEPS);
-    float jitter = mx_dither(gl_FragCoord.xy);
+    float jitter = mx_bayer4(gl_FragCoord.xy);
     float lit = 0.0;
     for (int i = 0; i < STEPS; i++) {
-        lit += lit_at(direction * ((float(i) + jitter) * stride));
+        // Closer together near the eye, where what breaks the light covers the most of the picture, so the edges
+        // of the shafts stay sharp. Each counts for the stretch it stands for.
+        float along = (float(i) + jitter) / float(STEPS);
+        lit += lit_at(direction * (along * along * end)) * 2.0 * along;
     }
     // The sunlit share of the whole stretch the shadow map covers, 0..1. A share, not a length: a longer shadow
     // distance must not thicken the air.
-    lit *= stride / range;
+    lit *= end / (float(STEPS) * range);
 
     // 1 looking straight at the sun, about a third 30 degrees off, next to nothing sideways.
     float cosine = dot(direction, MxLightDir.xyz);
@@ -121,7 +123,7 @@ vec3 sun_shafts(vec2 uv) {
     }
     const int STEPS = 20;
     vec2 stride = (sun - uv) / float(STEPS);
-    float jitter = mx_dither(gl_FragCoord.xy);
+    float jitter = mx_bayer4(gl_FragCoord.xy);
     float open = 0.0;
     float total = 0.0;
     float weight = 1.0;

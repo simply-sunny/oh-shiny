@@ -12,8 +12,14 @@ const int MX_BLOCK_SHINY = 6;
 const int MX_BLOCK_METAL = 7;
 // The lower half of a two-block plant (PLANT_UPPER is its upper half).
 const int MX_BLOCK_PLANT_LOWER = 10;
+// Seagrass, and the lower half of tall seagrass; and its upper half.
+const int MX_BLOCK_SEA_PLANT = 11;
+const int MX_BLOCK_SEA_PLANT_UPPER = 12;
+bool mx_is_sea_plant(int type) {
+    return type == MX_BLOCK_SEA_PLANT || type == MX_BLOCK_SEA_PLANT_UPPER;
+}
 bool mx_is_plant(int type) {
-    return type == MX_BLOCK_PLANT || type == MX_BLOCK_PLANT_LOWER || type == MX_BLOCK_PLANT_UPPER;
+    return type == MX_BLOCK_PLANT || type == MX_BLOCK_PLANT_LOWER || type == MX_BLOCK_PLANT_UPPER || mx_is_sea_plant(type);
 }
 
 // A block that gives off light. How bright it is comes from the block light on its own faces.

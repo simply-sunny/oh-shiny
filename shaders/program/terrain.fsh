@@ -81,6 +81,14 @@ void main() {
     vec3 albedo = mx_to_linear(color.rgb);
     float facing = mx_facing(normal, wrap);
     float shadow = facing > 0.0 ? mx_shadow_from(v_Position, v_ShadowUnbent, normal) : 1.0;
+    float caustic = mx_caustic_at(v_Position);
+    if (mx_is_sea_plant(type)) {
+        // Light under water comes from everywhere and through the blades, so one blade only shades the next a
+        // little; in full, the plant's lower half was cut off nearly black. Caustics follow the ground: on an
+        // upright blade, which stays at one place on it all the way up, they were neon stripes.
+        shadow = mix(0.55, 1.0, shadow);
+        caustic = mix(1.0, caustic, 0.2);
+    }
 
     // How much a surface mirrors the sun: polished things and metal a lot, most blocks a little. Rain wets
     // everything under the open sky, which darkens it and makes it shine.
@@ -100,7 +108,7 @@ void main() {
         albedo *= 1.0 - 0.3 * wet;
     }
 
-    vec3 lit = mx_lit(albedo, normal, v_Position, v_Light, facing, shadow) * ambient_scale;
+    vec3 lit = mx_lit(albedo, normal, v_Position, v_Light, facing, shadow, caustic) * ambient_scale;
     lit += mx_specular(normal, v_Position, gloss, highlight, shadow, v_Light);
 
     // Light comes through leaves and plants: seen against the sun they glow with it instead of going black.

@@ -1,4 +1,4 @@
-<p align="center"><img src="screenshots/sunset.webp" width="720" alt="A sunset over the sea with oh shiny"></p>
+<p align="center"><img src="screenshots/sunset.webp" width="720" alt="A sunset over the sea with oh shiny!"></p>
 
 <h1 align="center">oh shiny!</h1>
 
@@ -31,7 +31,7 @@ Client-side only. Servers don't need it.
 | 26.1–26.3 | Iris with Sodium | Iris 1.11.7, Sodium 0.9.2 on 26.3 |
 | 26.1–26.3 | Metallum with Leadlight | Leadlight 0.2.0 on 26.3 |
 
-Zips are named `oh shiny <version>.zip`. 1.5.1 and earlier were named `oh shiny! <version>.zip`.
+Zips are named `oh shiny! <version>.zip`. Only 1.5.2 was named `oh shiny 1.5.2.zip`.
 
 ## Use
 
@@ -46,39 +46,42 @@ Pick a preset under **Shader Packs → Shader Pack Settings** (Iris calls it Pro
 
 - Shadows cost the most. If the game runs slowly, turn off **Mob Shadows**, lower **Shadow Distance**, or turn off **Shadows**.
 - Ambient occlusion, sun rays, bloom and water reflections cost nothing when they're off. With Shadows and Colored Light both off, the shadow pass is skipped.
-- **Color Grading** has a screen of its own. Everything on it starts at Normal.
+- Beyond the preset, settings sit on six screens: **Lighting**, **Environment**, **Camera**, **Anti-aliasing**, **Color** and **Color Grading**. Lighting opens **Shadow Settings** for the finer shadow options. Everything on Color Grading starts at Normal.
 
 ## Configure
 
 Open **Options → Video Settings → Shader Packs → Shader Pack Settings**.
 
-| Setting | Default | Notes |
-| --- | --- | --- |
-| Shadows | On | The sun and moon cast shadows. |
-| Mob Shadows | On | Mobs, players and block entities cast shadows too. Off on Low. |
-| Shadow Sharpness | 2048 | The shadow map's size: 1024, 2048 or 4096. |
-| Shadow Distance | 96 | 32 to 512 blocks. |
-| Shadow Blur | Off | Off to 4. Blurs shadow edges, which hides their shimmer as you move. Not used with Pixel Shadows. |
-| Pixel Shadows | Off | Shadows fall in whole texture pixels, with blocky edges. |
-| Shadow Pixels | 16 | How many shadow pixels fit across a block: 4 to 64. 16 matches the game's textures. |
-| Soft Pixel Edges | Off | Pixels at a shadow's edge are only as dark as they are covered. |
-| Colored Light | On | Each light source glows in its own color. |
-| Hand Light | On | A light held in your hand lights up what's around you. |
-| Ambient Occlusion | On | Corners and crevices are a little darker. |
-| Sun Rays | Off | Shafts of sunlight through trees, openings and haze. On for High and Ultra. |
-| Sun Ray Strength | Insane | Soft is the air only. Strong and Insane add shafts across the picture. |
-| Sun Path Tilt | 0° | −60° to 60°. |
-| Water Reflections | On | Water mirrors the world around it. |
-| Waving | On | Water ripples, and leaves and plants sway. |
-| Bloom | On | A soft glow around bright things. |
-| Smooth Edges | On | Blends away the stair steps along edges. |
-| FXAA | Off | Smooths every edge in the picture. Replaces Smooth Edges. |
-| TAA | Off | Temporal anti-aliasing: the smoothest edges, with no shimmer on far-off blocks. |
-| Sharpening | Off | Up to 100%. Brings back the crispness TAA softens. 30–50% works well with TAA. |
-| Fog | Off | 10% to 90%: a haze over that last share of what you can see, far terrain included, thickest in the valleys. |
-| Color Grading | Normal | Exposure, contrast, shadows, highlights, saturation, vibrance, temperature, tint, shadow and highlight color, fade and vignette. |
+| Screen | Setting | Default | Notes |
+| --- | --- | --- | --- |
+| Lighting | Shadows | On | The sun and moon cast shadows. |
+| Lighting | Shadow Sharpness | 2048 | The shadow map's size: 1024, 2048 or 4096. |
+| Lighting | Shadow Distance | 96 | 32 to 512 blocks. |
+| Lighting | Colored Light | On | Each light source glows in its own color. |
+| Lighting | Hand Light | On | A light held in your hand lights up what's around you. |
+| Lighting | Ambient Occlusion | On | Corners and crevices are a little darker. |
+| Shadow Settings | Mob Shadows | On | Mobs, players and block entities cast shadows too. Off on Low. |
+| Shadow Settings | Sun Path Tilt | 0° | −60° to 60°. |
+| Shadow Settings | Shadow Blur | Off | Off to 4. Blurs shadow edges, which hides their shimmer as you move. Not used with Pixel Shadows. |
+| Shadow Settings | Pixel Shadows | Off | Shadows fall in whole texture pixels, with blocky edges. |
+| Shadow Settings | Shadow Pixels | 16 | How many shadow pixels fit across a block: 4 to 64. 16 matches the game's textures. |
+| Shadow Settings | Soft Pixel Edges | Off | Pixels at a shadow's edge are only as dark as they are covered. |
+| Environment | Sun Rays | Off | Sunlight in the air, broken up by trees and openings within Shadow Distance. Needs Shadows. On for High and Ultra. |
+| Environment | Sun Ray Strength | Strong | Soft is the air only. Strong and Insane add shafts around the sun, whatever Shadow Distance is. |
+| Environment | Fog | Off | 10% to 90%: a haze over that last share of what you can see, far terrain included, thickest in the valleys. |
+| Environment | Water Reflections | On | Water mirrors the world around it. |
+| Environment | Waving | On | Water ripples, and leaves and plants sway. |
+| Camera | Bloom | On | A soft glow around bright things. |
+| Camera | Vignette | Normal | Darkens the corners of the picture. |
+| Anti-aliasing | FXAA | Off | For when Smooth Edges leaves jagged edges behind. Smooths the whole picture, textures too. Replaces Smooth Edges. |
+| Anti-aliasing | TAA | Off | For when far-off blocks shimmer as you move. The smoothest edges, but softer. Can go with FXAA. |
+| Anti-aliasing | Smooth Edges | On | Start here. Blends away the stair steps along edges and keeps textures crisp. |
+| Anti-aliasing | Sharpening | Off | Up to 100%. Brings back the crispness TAA softens. 30–50% works well with TAA. |
+| Color | Sunset Color | Pink | Pink, Orange, Gold, Red, Purple or Blue, in the sky and in the low sun's light. |
+| Color | Dark Tint and Bright Tint | Normal | A color laid over the dark or bright parts of the picture, and how much of it. |
+| Color Grading | Color Grading | Normal | Exposure, contrast, dark areas, bright areas, saturation, vibrance, temperature, tint and fade. |
 
-Iris saves your choices next to the zip, in `shaderpacks/oh shiny <version>.zip.txt`. Delete that file to reset to defaults. Each version has its own zip name, so a new version starts from its defaults.
+Iris saves your choices next to the zip, in `shaderpacks/oh shiny! <version>.zip.txt`. Delete that file to reset to defaults. Each version has its own zip name, so a new version starts from its defaults.
 
 ## Develop
 

@@ -3,6 +3,8 @@
 #ifndef MX_SETTINGS
 #define MX_SETTINGS
 
+#define ABOUT 0 // The line at the top of the settings, naming the pack. Sets nothing. [0]
+
 // Lighting
 #define SHADOWS // The sun and moon cast shadows.
 #define MOB_SHADOWS // Mobs, players and block entities cast shadows too.
@@ -14,7 +16,7 @@
 #define HAND_LIGHT // A torch or other light held in the hand lights up what is around the player.
 #define AMBIENT_OCCLUSION // Corners and crevices are a little darker.
 //#define SUN_RAYS // Shafts of sunlight through trees, openings and haze, in the air itself.
-#define SUN_RAYS_STRENGTH 3 // Sun Ray Strength: 1 Soft, the air only; 2 Strong and 3 Insane add shafts pouring across the picture. [1 2 3]
+#define SUN_RAYS_STRENGTH 2 // Sun Ray Strength: 1 Soft, the air only; 2 Strong and 3 Insane add shafts pouring across the picture. [1 2 3]
 
 // World
 #define WATER_REFLECTIONS // Water mirrors the world around it.
@@ -22,6 +24,7 @@
 // A haze over the land, thickening with distance and most in the low ground, over the last part of what is
 // drawn (Distant Horizons' or Voxy's far terrain too): at 20 the last 20%. 0 is Off.
 #define FOG_AMOUNT 0 // [0 10 20 30 40 50 60 70 80 90]
+#define SUNSET_COLOR 0 // 0 pink, 1 orange, 2 gold, 3 red, 4 purple, 5 blue. [0 1 2 3 4 5]
 
 // Image
 #define BLOOM // A soft glow around bright things.

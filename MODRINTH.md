@@ -1,6 +1,6 @@
 # Modrinth release sheet
 
-This file is the source of truth for the Modrinth project settings, version metadata, and listing body. The listing body starts after the horizontal rule. Not on CurseForge.
+This file is the source of truth for the Modrinth project settings, version metadata, and listing body. The listing body starts after the horizontal rule. Also on [CurseForge](https://www.curseforge.com/minecraft/shaders/oh-shiny) (project `1769227`, slug `oh-shiny`), with the same icon and gallery.
 
 ## Project settings
 
@@ -9,7 +9,7 @@ This file is the source of truth for the Modrinth project settings, version meta
 | Title | **oh shiny!** |
 | Slug | `oh-shiny-shaders` (`oh-shiny` belongs to another author's mod) |
 | Project type | Shader |
-| Project ID | `1YIPfAv7` (rejected 2026-10-28: Forks and Reuploads, needs proof of permission or divergence) |
+| Project ID | `1YIPfAv7` (approved) |
 | Summary | A Minecraft shader pack derived from ohjey’s Metallum Extra shaders, with colored lighting, soft shadows, reflective water, and a cinematic sky. |
 | License | MIT |
 | Environment | Client-side only |
@@ -21,15 +21,15 @@ This file is the source of truth for the Modrinth project settings, version meta
 | Discord | *(none)* |
 | Donation links | *(none)* |
 | Icon | `branding/icon.png` (512×512, also the pack icon in the zip) |
-| Gallery | Sunset (featured), Moon, Night sky |
+| Gallery | Sunset (featured), Moon, Night sky, Village at night (`screenshots/village.webp`) |
 
 ## Version metadata
 
-Upload one Modrinth version per release zip, version number as in `VERSION`, channel `release`, loader `iris`. The title and version names keep the "!" on Modrinth and CurseForge; the zip (`oh shiny <version>.zip`, from `tools/build.py`) and everything on GitHub drop it. 1.5.1 was uploaded under its old name.
+Upload one Modrinth version per release zip, version number as in `VERSION`, channel `release`, loader `iris`. The name is `oh shiny!` everywhere, the zip (`oh shiny! <version>.zip`, from `tools/build.py`) included. Only 1.5.2 was named `oh shiny 1.5.2.zip`.
 
 | File | Version ID | Modrinth `game_versions` |
 | --- | --- | --- |
-| `oh shiny 1.5.2.zip` | *(not uploaded yet)* | `26.1`, `26.1.1`, `26.1.2`, `26.2`, `26.3` |
+| `oh shiny 1.5.2.zip` | `TLPia51L` | `26.1`, `26.1.1`, `26.1.2`, `26.2`, `26.3` |
 | `oh shiny! 1.5.1.zip` | `U2kVimHR` | `26.1`, `26.1.1`, `26.1.2`, `26.2`, `26.3` |
 
 Version name format: `oh shiny! 1.5.2`. Versions before 1.5.1 are on GitHub Releases only.
@@ -65,7 +65,7 @@ Full history: [commits](https://github.com/simply-sunny/oh-shiny/commits/main) a
 - Colored light from torches, soul fire, sea lanterns, and amethyst, etc.
 - Light from held torches and lanterns
 - Reflective water with ripples and caustics
-- Sunsets, stars, and the Milky Way
+- Sunsets in gold and coral, or a color you pick, plus stars and the Milky Way
 - Bloom, sun rays, ambient occlusion, and moving foliage
 - TAA, FXAA, sharpening, and adjustable color grading
 - Distant Horizons and Voxy support
