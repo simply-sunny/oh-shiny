@@ -17,10 +17,23 @@ COPPER_AGES = [waxed + age for waxed in ["", "waxed_"] for age in ["", "exposed_
 STONES = ["andesite", "diorite", "granite", "blackstone", "deepslate", "basalt", "tuff"]
 TALL_PLANTS = "tall_grass large_fern sunflower lilac rose_bush peony pitcher_plant".split()
 
-LEAVES = ("%leaves vine weeping_vines weeping_vines_plant twisting_vines twisting_vines_plant "
-          "cave_vines:berries=false cave_vines_plant:berries=false").split()
+# Named one by one rather than by tag (%leaves): Iris before 1.7 (Minecraft 1.20.2) reads no tags, and turns the
+# pack off at the first one.
+TREES = "oak spruce birch jungle acacia dark_oak mangrove cherry pale_oak".split()
 
-PLANTS = ("%small_flowers %saplings %crops short_grass grass fern dead_bush bush firefly_bush short_dry_grass "
+LEAVES = ([f"{tree}_leaves" for tree in TREES] + "red_poplar_leaves orange_poplar_leaves yellow_poplar_leaves "
+          "azalea_leaves flowering_azalea_leaves vine weeping_vines "
+          "weeping_vines_plant twisting_vines twisting_vines_plant cave_vines:berries=false "
+          "cave_vines_plant:berries=false".split())
+
+SMALL_FLOWERS = ("dandelion poppy blue_orchid allium azure_bluet red_tulip orange_tulip white_tulip pink_tulip "
+                 "oxeye_daisy cornflower lily_of_the_valley wither_rose torchflower open_eyeblossom "
+                 "closed_eyeblossom golden_dandelion").split()
+
+SAPLINGS = [f"{tree}_sapling" for tree in TREES if tree != "mangrove"] + ["poplar_sapling", "mangrove_propagule",
+                                                                          "azalea", "flowering_azalea"]
+
+PLANTS = SMALL_FLOWERS + SAPLINGS + ("short_grass grass fern dead_bush bush firefly_bush short_dry_grass "
           "tall_dry_grass sweet_berry_bush nether_wart brown_mushroom red_mushroom crimson_fungus "
           "warped_fungus crimson_roots warped_roots nether_sprouts hanging_roots cactus_flower torchflower_crop pitcher_crop melon_stem pumpkin_stem "
           "attached_melon_stem attached_pumpkin_stem wheat carrots potatoes beetroots").split()

@@ -2,7 +2,7 @@
 
 <h1 align="center">oh shiny!</h1>
 
-<p align="center">A shader pack with colored light, soft shadows and reflective water.<br>Iris &amp; Leadlight &nbsp;|&nbsp; 26.1 – 26.3</p>
+<p align="center">A shader pack with colored light, soft shadows and reflective water.<br>Iris &amp; Leadlight &nbsp;|&nbsp; 1.20.1 – 26.3</p>
 
 <p align="center">
 <a href="https://modrinth.com/shader/oh-shiny-shaders"><img src="https://img.shields.io/modrinth/dt/oh-shiny-shaders?logo=modrinth&label=Modrinth&color=1bd96a" alt="Modrinth downloads"></a>
@@ -28,7 +28,7 @@ Client-side only. Servers don't need it.
 
 | Minecraft | Loader | Tested with |
 | --- | --- | --- |
-| 26.1–26.3 | Iris with Sodium | Iris 1.11.7, Sodium 0.9.2 on 26.3 |
+| 1.20.1–26.3 | Iris with Sodium | Iris 1.7.6 on 1.20.1, 1.6.14 on 1.20.2, 1.8.14 on 1.21.1, 1.8.8 on 1.21.4, 1.9.6 on 1.21.8, 1.10.8 on 1.21.11, 1.11.7 with Sodium 0.9.2 on 26.3 |
 | 26.1–26.3 | Metallum with Leadlight | Leadlight 0.2.0 on 26.3 |
 
 Zips are named `oh shiny! <version>.zip`. Only 1.5.2 was named `oh shiny 1.5.2.zip`.
@@ -123,10 +123,10 @@ Logs are in `.minecraft/logs/latest.log`. Include the log, a screenshot, your GP
 
 ## Limits
 
-- **Minecraft:** 26.1 to 26.3 only.
+- **Minecraft:** 1.20.1 to 26.3 on Iris, 26.1 to 26.3 on Leadlight.
 - **Voxy:** Iris only.
 - **Resource pack PBR:** LabPBR 1.3 only, blocks only, and not tested on Leadlight yet. See [Resource pack PBR](#resource-pack-pbr).
-- **Distant Horizons:** its far-off terrain casts no shadows. The shadow map only reaches Shadow Distance.
+- **Distant Horizons:** its far-off terrain casts no shadows. The shadow map only reaches Shadow Distance. It needs Iris 1.7 or later, so not on 1.20.2, and on 1.20.x also [Indium](https://modrinth.com/mod/indium).
 - **Clouds turning off after a restart:** reported in [#3](https://github.com/simply-sunny/oh-shiny/issues/3), not reproduced yet.
 
 ## License
