@@ -84,8 +84,9 @@ float mx_caustic_at(vec3 position) {
 
 // `albedo`: linear surface color. `normal`: world orientation. `position`: relative to the eye. `light`: block
 // light and sky light, each 0..1. `facing`: from mx_facing. `shadow`: 1 where the sun or moon reaches, 0 where
-// something is in the way. `caustic`: from mx_caustic_at.
-vec3 mx_lit(vec3 albedo, vec3 normal, vec3 position, vec2 light, float facing, float shadow, float caustic) {
+// something is in the way. `caustic`: from mx_caustic_at. `occlusion`: 1 open, lower where a resource pack's ambient
+// occlusion map darkens the light from all around, not the sun's.
+vec3 mx_lit(vec3 albedo, vec3 normal, vec3 position, vec2 light, float facing, float shadow, float caustic, float occlusion) {
     // Sky light falls off more gently than the game's curve alone, or shade under trees and shallow water
     // would be far darker than the open ground beside it.
     float sky = mix(mx_light_curve(light.y), light.y * light.y, 0.5);
@@ -116,19 +117,24 @@ vec3 mx_lit(vec3 albedo, vec3 normal, vec3 position, vec2 light, float facing, f
     // sunlit ground onto faces that look down or sideways.
     vec3 ambient = MxSkyAmbient.rgb * sky * (0.62 + 0.38 * normal.y) * side;
     ambient += MxLightColor.rgb * sky * 0.045 * (1.0 - 0.6 * normal.y);
+    ambient *= occlusion;
 
     // Torches, lava and the like, in the color of whatever is giving the light, and brighter still right next
     // to the source.
     vec3 glow = block_color * 3.3 * MxBlockLight.w * block * (0.5 + 0.5 * block_level);
-    glow *= side * (0.88 + 0.12 * normal.y);
+    glow *= side * (0.88 + 0.12 * normal.y) * mix(1.0, occlusion, 0.5);
 
     vec3 total = direct + ambient + glow + MxMinAmbient.rgb;
     total *= 1.0 - clamp(MxMinAmbient.w, 0.0, 0.85);
     return albedo * total;
 }
 
+vec3 mx_lit(vec3 albedo, vec3 normal, vec3 position, vec2 light, float facing, float shadow, float caustic) {
+    return mx_lit(albedo, normal, position, light, facing, shadow, caustic, 1.0);
+}
+
 vec3 mx_lit(vec3 albedo, vec3 normal, vec3 position, vec2 light, float facing, float shadow) {
-    return mx_lit(albedo, normal, position, light, facing, shadow, mx_caustic_at(position));
+    return mx_lit(albedo, normal, position, light, facing, shadow, mx_caustic_at(position), 1.0);
 }
 
 // The sun's or moon's highlight on a surface. `gloss` 0 is matte, 1 a mirror-like polish. `tint` colors the
@@ -146,6 +152,40 @@ vec3 mx_specular(vec3 normal, vec3 position, float gloss, vec3 tint, float shado
     float strength = mix(0.04, 1.0, grazing) * gloss;
     float open = smoothstep(0.08, 0.5, light.y);
     return MxLightColor.rgb * tint * spot * strength * shadow * open * MxLightDir.w;
+}
+
+// A resource pack's material (see pbr.glsl): the sun's or moon's highlight, as a GGX lobe with Fresnel, where
+// `smoothness` sets how tight it is and `f0` (a color: a metal's own) how much is mirrored head-on.
+vec3 mx_specular_pbr(vec3 normal, vec3 position, float smoothness, vec3 f0, float shadow, vec2 light) {
+    vec3 to_eye = -normalize(position);
+    vec3 half_way = normalize(MxLightDir.xyz + to_eye);
+    float n_l = max(dot(normal, MxLightDir.xyz), 0.0);
+    float n_v = max(dot(normal, to_eye), 0.01);
+    float n_h = max(dot(normal, half_way), 0.0);
+    float v_h = max(dot(to_eye, half_way), 0.0);
+    float rough = 1.0 - smoothness;
+    float alpha = max(rough * rough, 0.03);
+    float alpha2 = alpha * alpha;
+    float spread = n_h * n_h * (alpha2 - 1.0) + 1.0;
+    float ggx = alpha2 / (3.14159265 * spread * spread);
+    // Smith's shadowing of the surface's own bumps, with the light's cosine already taken out.
+    float k = alpha * 0.5;
+    float visible = (n_l / (n_l * (1.0 - k) + k)) * (n_v / (n_v * (1.0 - k) + k)) / (4.0 * n_v);
+    vec3 fresnel = f0 + (1.0 - f0) * pow(1.0 - v_h, 5.0);
+    float open = smoothstep(0.08, 0.5, light.y);
+    // Rough things scatter what they catch: their highlight is dim and wide, and kept so rather than left to glint.
+    float polish = mix(0.25, 1.0, smoothstep(0.25, 0.7, smoothness));
+    return MxLightColor.rgb * fresnel * min(ggx * visible, 12.0) * polish * shadow * open * MxLightDir.w;
+}
+
+// The sky mirrored in a resource pack's smooth surface, more at a grazing angle, and in its own color for metal.
+vec3 mx_reflection_pbr(vec3 normal, vec3 position, float smoothness, vec3 f0, vec2 light) {
+    vec3 to_eye = -normalize(position);
+    float n_v = max(dot(normal, to_eye), 0.0);
+    vec3 fresnel = f0 + (1.0 - f0) * pow(1.0 - n_v, 5.0);
+    vec3 mirrored = reflect(-to_eye, normal);
+    vec3 sky = MxSkyAmbient.rgb * (0.55 + 0.45 * mirrored.y);
+    return fresnel * sky * smoothness * smoothness * smoothstep(0.08, 0.5, light.y);
 }
 
 #endif

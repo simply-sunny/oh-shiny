@@ -18,6 +18,13 @@
 //#define SUN_RAYS // Shafts of sunlight through trees, openings and haze, in the air itself.
 #define SUN_RAYS_STRENGTH 2 // Sun Ray Strength: 1 Soft, the air only; 2 Strong and 3 Insane add shafts pouring across the picture. [1 2 3]
 
+// Material: a resource pack's normal and specular maps in the LabPBR layout (lib/pbr.glsl).
+#define PBR // Bumps, shine, metal and glow from the pack's maps. Nothing without such a pack.
+//#define POM // Parallax occlusion mapping: the pack's height maps make its surfaces deep.
+#define POM_DEPTH 50 // How deep, as a share of a quarter block. [10 20 30 40 50 60 70 80 90 100]
+#define POM_QUALITY 2 // 1 Low, 8 layers; 2 Medium, 16; 3 High, 32. [1 2 3]
+#define POM_DISTANCE 32 // Blocks away the depth fades out. [16 24 32 48 64]
+
 // World
 #define WATER_REFLECTIONS // Water mirrors the world around it.
 #define WAVING // Water ripples; leaves and plants sway.
@@ -49,8 +56,11 @@
 #define GRADE_HIGHLIGHT_TONE_AMOUNT 0 // [0 10 20 30 40 50 60 70 80 90 100]
 #define GRADE_VIGNETTE 0 // Corners darkened. [0 10 20 30 40 50 60 70 80 90 100]
 
-// Iris lists an on/off option only where it sees it tested; this one is only tested in shaders.properties.
+// Iris lists an on/off option only where it sees it tested with #ifdef or #ifndef: MOB_SHADOWS is only tested in
+// shaders.properties, and HAND_LIGHT only in lines of the form #if defined X && Y, which Iris does not read.
 #ifdef MOB_SHADOWS
+#endif
+#ifdef HAND_LIGHT
 #endif
 
 const int shadowMapResolution = 2048; // [1024 2048 4096]

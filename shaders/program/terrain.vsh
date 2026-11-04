@@ -9,6 +9,9 @@
 
 in vec4 mc_Entity;
 in vec4 at_midBlock;
+#ifdef POM
+in vec4 mc_midTexCoord;
+#endif
 
 out vec4 v_Color;
 out vec2 v_TexCoord;
@@ -18,6 +21,11 @@ out vec3 v_Normal;
 // mx_shadow_unbent of v_Position, for mx_shadow_from.
 out vec3 v_ShadowUnbent;
 flat out int v_Type;
+#ifdef POM
+// The face's tile of the atlas: its centre, and the distance from there to a corner.
+flat out vec2 v_TexMid;
+flat out vec2 v_TexHalf;
+#endif
 
 void main() {
     mx_setup();
@@ -26,6 +34,10 @@ void main() {
     vec2 light_map = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
     v_Light = clamp((light_map - 1.0 / 32.0) * (16.0 / 15.0), 0.0, 1.0);
     v_Color = gl_Color;
+#ifdef POM
+    v_TexMid = mc_midTexCoord.xy;
+    v_TexHalf = abs(v_TexCoord - mc_midTexCoord.xy);
+#endif
 
     // Relative to the eye, in world orientation: the view matrix only turns it to face where the camera looks.
     vec3 view = (gl_ModelViewMatrix * gl_Vertex).xyz;

@@ -46,7 +46,8 @@ Pick a preset under **Shader Packs → Shader Pack Settings** (Iris calls it Pro
 
 - Shadows cost the most. If the game runs slowly, turn off **Mob Shadows**, lower **Shadow Distance**, or turn off **Shadows**.
 - Ambient occlusion, sun rays, bloom and water reflections cost nothing when they're off. With Shadows and Colored Light both off, the shadow pass is skipped.
-- Beyond the preset, settings sit on six screens: **Lighting**, **Environment**, **Camera**, **Anti-aliasing**, **Color** and **Color Grading**. Lighting opens **Shadow Settings** for the finer shadow options. Everything on Color Grading starts at Normal.
+- Beyond the preset, settings sit on seven screens: **Lighting**, **Material**, **Environment**, **Camera**, **Anti-aliasing**, **Color** and **Color Grading**. Lighting opens **Shadow Settings** for the finer shadow options. Everything on Color Grading starts at Normal.
+- Parallax Depth costs speed, which is why it starts off. Lower its Quality or Distance first if the game runs slowly with it on.
 
 ## Configure
 
@@ -60,6 +61,11 @@ Open **Options → Video Settings → Shader Packs → Shader Pack Settings**.
 | Lighting | Colored Light | On | Each light source glows in its own color. |
 | Lighting | Hand Light | On | A light held in your hand lights up what's around you. |
 | Lighting | Ambient Occlusion | On | Corners and crevices are a little darker. |
+| Material | Resource Pack PBR | On | Bumps, shine, metal and glow from a LabPBR resource pack's normal and specular maps. Nothing happens without such a pack. See [Resource pack PBR](#resource-pack-pbr). |
+| Material | Parallax Depth | Off | The pack's height maps make surfaces look deep. Costs speed. |
+| Material | Depth | 50% | 10% to 100% of a quarter block. |
+| Material | Quality | Medium | Low, Medium or High: 8, 16 or 32 layers. |
+| Material | Distance | 32 blocks | 16 to 64 blocks. The depth fades out by then. |
 | Shadow Settings | Mob Shadows | On | Mobs, players and block entities cast shadows too. Off on Low. |
 | Shadow Settings | Sun Path Tilt | 0° | −60° to 60°. |
 | Shadow Settings | Shadow Blur | Off | Off to 4. Blurs shadow edges, which hides their shimmer as you move. Not used with Pixel Shadows. |
@@ -82,6 +88,14 @@ Open **Options → Video Settings → Shader Packs → Shader Pack Settings**.
 | Color Grading | Color Grading | Normal | Exposure, contrast, dark areas, bright areas, saturation, vibrance, temperature, tint and fade. |
 
 Iris saves your choices next to the zip, in `shaderpacks/oh shiny! <version>.zip.txt`. Delete that file to reset to defaults. Each version has its own zip name, so a new version starts from its defaults.
+
+## Resource pack PBR
+
+With a resource pack that has normal and specular maps in the LabPBR 1.3 layout, such as [Vanilla Mashup (PBR)](https://modrinth.com/resourcepack/vanilla-mashup-pbr), blocks get bumps from the normal map, crevice shading from its ambient occlusion, sun highlights and sky reflections from the specular map (smoothness, reflectance and metals), and glow from its emission. Where a texture has no maps, the pack lights it as before. Turn it off under **Material**.
+
+Parallax Depth uses the pack's height maps to make cobblestone, bricks and the like look deep. It needs Iris or Leadlight to pass the tile data of each face to the shader (`mc_midTexCoord`); if it does nothing, that is why.
+
+Only blocks are covered, not entities, held items or Distant Horizons' far-off terrain. Plants, leaves and glass get no parallax. The depth is drawn on the surface and does not change what is in front of what, so edges stay flat. Vanilla Mashup asks you to turn mipmaps off (Options → Video Settings → Mipmap Levels: Off) for the maps to look right.
 
 ## Develop
 
@@ -111,6 +125,7 @@ Logs are in `.minecraft/logs/latest.log`. Include the log, a screenshot, your GP
 
 - **Minecraft:** 26.1 to 26.3 only.
 - **Voxy:** Iris only.
+- **Resource pack PBR:** LabPBR 1.3 only, blocks only, and not tested on Leadlight yet. See [Resource pack PBR](#resource-pack-pbr).
 - **Distant Horizons:** its far-off terrain casts no shadows. The shadow map only reaches Shadow Distance.
 - **Clouds turning off after a restart:** reported in [#3](https://github.com/simply-sunny/oh-shiny/issues/3), not reproduced yet.
 

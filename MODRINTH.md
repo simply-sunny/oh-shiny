@@ -68,6 +68,7 @@ Full history: [commits](https://github.com/simply-sunny/oh-shiny/commits/main) a
 - Reflective water with ripples and caustics
 - Sunsets in gold and coral, or a color you pick, plus stars and the Milky Way
 - Bloom, sun rays, ambient occlusion, and moving foliage
+- Resource pack PBR (LabPBR normal, specular and emission maps) and parallax depth
 - TAA, FXAA, sharpening, and adjustable color grading
 - Distant Horizons and Voxy support
 - Low, Medium, High, and Ultra quality presets

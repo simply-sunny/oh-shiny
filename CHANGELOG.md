@@ -2,6 +2,13 @@
 
 All notable changes to oh shiny! are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- **Resource pack PBR**: normal maps, ambient occlusion, smoothness, metals and emission from LabPBR resource packs such as Vanilla Mashup (PBR), on blocks. Nothing changes without such a pack. A new **Material** screen turns it off.
+- **Parallax Depth**: parallax occlusion mapping from the pack's height maps, with Depth, Quality and Distance settings. Off by default.
+
 ## [1.5.3] - 2026-11-01
 
 ### Changed
