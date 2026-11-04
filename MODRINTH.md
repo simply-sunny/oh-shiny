@@ -35,6 +35,14 @@ Upload one Modrinth version per release zip, version number as in `VERSION`, cha
 
 Version name format: `oh shiny! 1.5.3`. Versions before 1.5.1 are on GitHub Releases only.
 
+Upload with `tools/publish.py`.
+
+| File | CurseForge file ID |
+| --- | --- |
+| `oh shiny! 1.5.3.zip` | `9423433` |
+
+Earlier CurseForge file IDs aren't recorded.
+
 ---
 
 # oh shiny!
