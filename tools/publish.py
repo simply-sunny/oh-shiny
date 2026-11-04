@@ -1,7 +1,7 @@
 """Uploads dist/oh shiny! <version>.zip to Modrinth or CurseForge, and keeps the Modrinth listing in sync with MODRINTH.md.
 
-The Modrinth version copies its loaders from the latest one there, and both sites get GAME_VERSIONS. CurseForge uploads
-go to review, and its project description can only be changed on the site. Add the new IDs to MODRINTH.md afterwards.
+The Modrinth version copies its loaders and game versions from the latest one there. CurseForge uploads go to review, and
+its project description can only be changed on the site. Add the new IDs to MODRINTH.md afterwards.
 
     python3 tools/build.py
     MODRINTH_API_KEY=... python3 tools/publish.py modrinth [--dry-run]
@@ -25,9 +25,7 @@ MODRINTH = "https://api.modrinth.com/v2"
 CURSEFORGE = "https://minecraft.curseforge.com/api"
 MODRINTH_PROJECT = "1YIPfAv7"
 CURSEFORGE_PROJECT = "1769227"
-GAME_VERSIONS = ["1.20.1", "1.20.2", "1.20.3", "1.20.4", "1.20.5", "1.20.6", "1.21", "1.21.1", "1.21.2", "1.21.3",
-                 "1.21.4", "1.21.5", "1.21.6", "1.21.7", "1.21.8", "1.21.9", "1.21.10", "1.21.11", "26.1", "26.1.1",
-                 "26.1.2", "26.2", "26.3"]
+GAME_VERSIONS = ["26.1", "26.1.1", "26.1.2", "26.2", "26.3"]
 
 
 def call(url, headers, data=None, method=None, content_type=None):
@@ -66,7 +64,7 @@ def modrinth(dry_run):
         "version_number": VERSION,
         "changelog": notes(),
         "dependencies": latest["dependencies"],
-        "game_versions": GAME_VERSIONS,
+        "game_versions": latest["game_versions"],
         "version_type": "release",
         "loaders": latest["loaders"],
         "featured": latest["featured"],

@@ -2,17 +2,12 @@
 
 All notable changes to oh shiny! are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
-## [1.6.0] - 2026-11-04
+## [Unreleased]
 
 ### Added
 
-- **Minecraft 1.20.1 to 1.21.11** on Iris, from Iris 1.6 on. Distant Horizons works from Iris 1.7 on (not on 1.20.2), and on 1.20.x it needs Indium.
 - **Resource pack PBR**: normal maps, ambient occlusion, smoothness, metals and emission from LabPBR resource packs such as Vanilla Mashup (PBR), on blocks. Nothing changes without such a pack. A new **Material** screen turns it off.
 - **Parallax Depth**: parallax occlusion mapping from the pack's height maps, with Depth, Quality and Distance settings. Off by default.
-
-### Fixed
-
-- **Distant Horizons' water showing through land** on Iris before 1.8: the far-off sea no longer draws over the hills in front of it.
 
 ## [1.5.3] - 2026-11-01
 
