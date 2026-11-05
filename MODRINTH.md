@@ -47,7 +47,7 @@ Earlier CurseForge file IDs aren't recorded.
 
 # oh shiny!
 
-A shader pack for Minecraft 1.20.1–26.3, with colored lighting, soft shadows, reflective water, and a cinematic sky.
+A shader pack for Minecraft 26.1–26.3, with colored lighting, soft shadows, reflective water, and a cinematic sky.
 
 ## Content Disclosures
 

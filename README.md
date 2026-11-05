@@ -2,11 +2,11 @@
 
 <h1 align="center">oh shiny!</h1>
 
-<p align="center">A shader pack with colored light, soft shadows and reflective water.<br>Iris &amp; Leadlight &nbsp;|&nbsp; 1.20.1 – 26.3</p>
+<p align="center">A shader pack with colored light, soft shadows and reflective water.<br>Iris &amp; Leadlight &nbsp;|&nbsp; 26.1 – 26.3</p>
 
 <p align="center">
 <a href="https://modrinth.com/shader/oh-shiny-shaders"><img src="https://img.shields.io/modrinth/dt/oh-shiny-shaders?logo=modrinth&label=Modrinth&color=1bd96a" alt="Modrinth downloads"></a>
-<a href="https://www.curseforge.com/minecraft/shaders/oh-shiny"><img src="https://img.shields.io/curseforge/dt/1769227?logo=curseforge&label=CurseForge&color=f16436" alt="CurseForge downloads"></a>
+<a href="https://www.curseforge.com/minecraft/mc-mods/cue-my-music"><img src="https://img.shields.io/curseforge/dt/1766472?logo=curseforge&label=CurseForge&color=f16436" alt="CurseForge downloads"></a>
 <a href="https://github.com/simply-sunny/oh-shiny/releases"><img src="https://img.shields.io/github/v/release/simply-sunny/oh-shiny?label=release&color=2ea44f" alt="Latest release"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT license"></a>
 </p>
@@ -28,7 +28,7 @@ Client-side only. Servers don't need it.
 
 | Minecraft | Loader | Tested with |
 | --- | --- | --- |
-| 1.20.1–26.3 | Iris with Sodium | Iris 1.7.6 on 1.20.1, 1.6.14 on 1.20.2, 1.8.14 on 1.21.1, 1.8.8 on 1.21.4, 1.9.6 on 1.21.8, 1.10.8 on 1.21.11, 1.11.7 with Sodium 0.9.2 on 26.3 |
+| 26.1–26.3 | Iris with Sodium | Iris 1.11.7, Sodium 0.9.2 on 26.3 |
 | 26.1–26.3 | Metallum with Leadlight | Leadlight 0.2.0 on 26.3 |
 
 Zips are named `oh shiny! <version>.zip`. Only 1.5.2 was named `oh shiny 1.5.2.zip`.
@@ -46,8 +46,7 @@ Pick a preset under **Shader Packs → Shader Pack Settings** (Iris calls it Pro
 
 - Shadows cost the most. If the game runs slowly, turn off **Mob Shadows**, lower **Shadow Distance**, or turn off **Shadows**.
 - Ambient occlusion, sun rays, bloom and water reflections cost nothing when they're off. With Shadows and Colored Light both off, the shadow pass is skipped.
-- Beyond the preset, settings sit on seven screens: **Lighting**, **Material**, **Environment**, **Camera**, **Anti-aliasing**, **Color** and **Color Grading**. Lighting opens **Shadow Settings** for the finer shadow options. Everything on Color Grading starts at Normal.
-- Parallax Depth costs speed, which is why it starts off. Lower its Quality or Distance first if the game runs slowly with it on.
+- Beyond the preset, settings sit on six screens: **Lighting**, **Environment**, **Camera**, **Anti-aliasing**, **Color** and **Color Grading**. Lighting opens **Shadow Settings** for the finer shadow options. Everything on Color Grading starts at Normal.
 
 ## Configure
 
@@ -61,11 +60,6 @@ Open **Options → Video Settings → Shader Packs → Shader Pack Settings**.
 | Lighting | Colored Light | On | Each light source glows in its own color. |
 | Lighting | Hand Light | On | A light held in your hand lights up what's around you. |
 | Lighting | Ambient Occlusion | On | Corners and crevices are a little darker. |
-| Material | Resource Pack PBR | On | Bumps, shine, metal and glow from a LabPBR resource pack's normal and specular maps. Nothing happens without such a pack. See [Resource pack PBR](#resource-pack-pbr). |
-| Material | Parallax Depth | Off | The pack's height maps make surfaces look deep. Costs speed. |
-| Material | Depth | 50% | 10% to 100% of a quarter block. |
-| Material | Quality | Medium | Low, Medium or High: 8, 16 or 32 layers. |
-| Material | Distance | 32 blocks | 16 to 64 blocks. The depth fades out by then. |
 | Shadow Settings | Mob Shadows | On | Mobs, players and block entities cast shadows too. Off on Low. |
 | Shadow Settings | Sun Path Tilt | 0° | −60° to 60°. |
 | Shadow Settings | Shadow Blur | Off | Off to 4. Blurs shadow edges, which hides their shimmer as you move. Not used with Pixel Shadows. |
@@ -88,14 +82,6 @@ Open **Options → Video Settings → Shader Packs → Shader Pack Settings**.
 | Color Grading | Color Grading | Normal | Exposure, contrast, dark areas, bright areas, saturation, vibrance, temperature, tint and fade. |
 
 Iris saves your choices next to the zip, in `shaderpacks/oh shiny! <version>.zip.txt`. Delete that file to reset to defaults. Each version has its own zip name, so a new version starts from its defaults.
-
-## Resource pack PBR
-
-With a resource pack that has normal and specular maps in the LabPBR 1.3 layout, such as [Vanilla Mashup (PBR)](https://modrinth.com/resourcepack/vanilla-mashup-pbr), blocks get bumps from the normal map, crevice shading from its ambient occlusion, sun highlights and sky reflections from the specular map (smoothness, reflectance and metals), and glow from its emission. Where a texture has no maps, the pack lights it as before. Turn it off under **Material**.
-
-Parallax Depth uses the pack's height maps to make cobblestone, bricks and the like look deep. It needs Iris or Leadlight to pass the tile data of each face to the shader (`mc_midTexCoord`); if it does nothing, that is why.
-
-Only blocks are covered, not entities, held items or Distant Horizons' far-off terrain. Plants, leaves and glass get no parallax. The depth is drawn on the surface and does not change what is in front of what, so edges stay flat. Vanilla Mashup asks you to turn mipmaps off (Options → Video Settings → Mipmap Levels: Off) for the maps to look right.
 
 ## Develop
 
@@ -123,10 +109,9 @@ Logs are in `.minecraft/logs/latest.log`. Include the log, a screenshot, your GP
 
 ## Limits
 
-- **Minecraft:** 1.20.1 to 26.3 on Iris, 26.1 to 26.3 on Leadlight.
+- **Minecraft:** 26.1 to 26.3 only.
 - **Voxy:** Iris only.
-- **Resource pack PBR:** LabPBR 1.3 only, blocks only, and not tested on Leadlight yet. See [Resource pack PBR](#resource-pack-pbr).
-- **Distant Horizons:** its far-off terrain casts no shadows. The shadow map only reaches Shadow Distance. It needs Iris 1.7 or later, so not on 1.20.2, and on 1.20.x also [Indium](https://modrinth.com/mod/indium).
+- **Distant Horizons:** its far-off terrain casts no shadows. The shadow map only reaches Shadow Distance.
 - **Clouds turning off after a restart:** reported in [#3](https://github.com/simply-sunny/oh-shiny/issues/3), not reproduced yet.
 
 ## License

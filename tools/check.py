@@ -25,9 +25,7 @@ VARIANTS = {
                       ("//#define PIXEL_SHADOWS_SOFT", "#define PIXEL_SHADOWS_SOFT")],
     "soft shadows": [("#define SHADOW_SOFTNESS 1", "#define SHADOW_SOFTNESS 3"), ("//#define SUN_RAYS", "#define SUN_RAYS"),
                      ("#define SUN_RAYS_STRENGTH 2", "#define SUN_RAYS_STRENGTH 1")],
-    "parallax": [("//#define POM", "#define POM"), ("#define POM_QUALITY 2", "#define POM_QUALITY 3")],
-    "parallax low": [("//#define POM", "#define POM"), ("#define POM_QUALITY 2", "#define POM_QUALITY 1")],
-    "everything on": [("//#define SUN_RAYS", "#define SUN_RAYS"), ("//#define POM", "#define POM"), PIXEL_SHADOWS, ("#define FOG_AMOUNT 0", "#define FOG_AMOUNT 50"),
+    "everything on": [("//#define SUN_RAYS", "#define SUN_RAYS"), PIXEL_SHADOWS, ("#define FOG_AMOUNT 0", "#define FOG_AMOUNT 50"),
                       ("//#define FXAA", "#define FXAA"), ("//#define TAA", "#define TAA"),
                       ("#define SHARPENING 0", "#define SHARPENING 40")],
     "color grading": [("#define GRADE_TEMPERATURE 0", "#define GRADE_TEMPERATURE 20"), ("#define GRADE_CONTRAST 0", "#define GRADE_CONTRAST -20"),
@@ -35,7 +33,7 @@ VARIANTS = {
     "everything off": [
         ("#define SHADOWS", "//#define SHADOWS"), ("#define COLORED_LIGHT", "//#define COLORED_LIGHT"),
         ("#define HAND_LIGHT", "//#define HAND_LIGHT"),
-        ("#define PBR", "//#define PBR"), ("#define AMBIENT_OCCLUSION", "//#define AMBIENT_OCCLUSION"), ("#define WATER_REFLECTIONS", "//#define WATER_REFLECTIONS"),
+        ("#define AMBIENT_OCCLUSION", "//#define AMBIENT_OCCLUSION"), ("#define WATER_REFLECTIONS", "//#define WATER_REFLECTIONS"),
         ("#define WAVING", "//#define WAVING"), ("#define BLOOM", "//#define BLOOM"), ("#define SMOOTH_EDGES", "//#define SMOOTH_EDGES"),
     ],
 }

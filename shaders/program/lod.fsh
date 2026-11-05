@@ -13,11 +13,6 @@ in vec3 v_Position;
 in vec3 v_Normal;
 flat in int v_Type;
 
-#ifdef MX_TRANSLUCENT
-// The game's depth before its own water: where it drew anything solid.
-uniform sampler2D depthtex1;
-#endif
-
 layout(location = 0) out vec4 fragColor;
 
 void main() {
@@ -28,14 +23,6 @@ void main() {
     if (mx_dither(gl_FragCoord.xy) >= takeover) {
         discard;
     }
-#ifdef MX_TRANSLUCENT
-    // Its water is drawn after the game's world, and Iris before 1.8 does not test it against the game's depth:
-    // the far-off sea would show through the land in front of it. Where the game drew anything solid, it is the
-    // one seen.
-    if (texelFetch(depthtex1, ivec2(gl_FragCoord.xy), 0).r < 1.0) {
-        discard;
-    }
-#endif
 
     // Turned to face the camera, for faces seen from behind.
     vec3 normal = normalize(v_Normal);
