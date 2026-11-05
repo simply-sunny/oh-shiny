@@ -18,7 +18,7 @@ CurseForge projects can't be created through the API, so the project is made by 
 
 ## Files
 
-One file per release zip, release type `release`, game versions `26.1`, `26.1.1`, `26.1.2`, `26.2`, `26.3`.
+One file per release zip, release type `release`, game versions as in `GAME_VERSIONS` in `tools/publish.py`.
 
 | File | CurseForge file ID |
 | --- | --- |
@@ -30,7 +30,7 @@ Earlier file IDs aren't recorded.
 
 # oh shiny!
 
-A shader pack for Minecraft 26.1–26.3, with colored lighting, soft shadows, reflective water, and a cinematic sky.
+A shader pack for Minecraft 1.20.1–26.3, with colored lighting, soft shadows, reflective water, and a cinematic sky.
 
 ## Credits
 

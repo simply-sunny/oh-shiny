@@ -4,9 +4,13 @@ All notable changes to oh shiny! are documented here. This project follows [Sema
 
 ## [1.5.4] - 2026-11-04
 
-### Changed
+### Added
 
-- Version number only. The pack is the same as 1.5.3.
+- **Minecraft 1.20.1 to 1.21.11** on Iris, from Iris 1.6 on. Distant Horizons works from Iris 1.7 on (not on 1.20.2), and on 1.20.x it needs Indium.
+
+### Fixed
+
+- **Distant Horizons' water showing through land** on Iris before 1.8: the far-off sea no longer draws over the hills in front of it.
 
 ## [1.5.3] - 2026-11-01
 
