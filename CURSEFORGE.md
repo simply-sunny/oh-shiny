@@ -23,6 +23,7 @@ One file per release zip, release type `release`, game versions as in `GAME_VERS
 | File | CurseForge file ID |
 | --- | --- |
 | `oh shiny! 1.5.3.zip` | `9423433` |
+| `oh shiny! 1.5.4.zip` | `9446418` |
 
 Earlier file IDs aren't recorded.
 

@@ -30,6 +30,7 @@ Upload one Modrinth version per release zip, version number as in `VERSION`, cha
 | File | Version ID | Modrinth `game_versions` |
 | --- | --- | --- |
 | `oh shiny! 1.5.3.zip` | `C3cDfb3J` | `26.1`, `26.1.1`, `26.1.2`, `26.2`, `26.3` |
+| `oh shiny! 1.5.4.zip` | `fZXojQjS` | `1.20.1` to `1.21.11`, `26.1`, `26.1.1`, `26.1.2`, `26.2`, `26.3` |
 | `oh shiny 1.5.2.zip` | `TLPia51L` | `26.1`, `26.1.1`, `26.1.2`, `26.2`, `26.3` |
 | `oh shiny! 1.5.1.zip` | `U2kVimHR` | `26.1`, `26.1.1`, `26.1.2`, `26.2`, `26.3` |
 
@@ -40,6 +41,7 @@ Upload with `tools/publish.py`.
 | File | CurseForge file ID |
 | --- | --- |
 | `oh shiny! 1.5.3.zip` | `9423433` |
+| `oh shiny! 1.5.4.zip` | `9446418` |
 
 Earlier CurseForge file IDs aren't recorded.
 
