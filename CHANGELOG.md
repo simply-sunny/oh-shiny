@@ -2,6 +2,12 @@
 
 All notable changes to oh shiny! are documented here. This project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- **Water reflections**: no more bands across the reflected scene, and no smeared copies of a hill when the reflection passes behind it.
+
 ## [1.5.4] - 2026-11-04
 
 ### Added

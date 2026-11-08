@@ -34,11 +34,14 @@ vec3 mx_project(vec3 view_point) {
 // nothing is known).
 // `steps`: how many to take; `growth`: how much longer each is than the one before; `refine`: how many times to
 // halve the last one. Fewer, faster-growing steps reach as far for less: twelve growing by 1.75 reach about 330
-// blocks, near enough as far as the screen shows anything, where sixteen growing by half reached 400.
+// blocks on average, near enough as far as the screen shows anything, where sixteen growing by half reached 400.
+// The dither scales every step, so one pixel's reach is anywhere from about 200 to 460 blocks.
 vec4 mx_reflect_scene(vec3 origin, vec3 direction, float jitter, int steps, float growth, int refine) {
-    float stride = 0.3;
+    // Every step is scaled by this pixel's dither, not only the first: with the same step lengths everywhere,
+    // neighboring pixels found their hits at the same distances, and the reflection broke into bands.
+    float stride = 0.3 * (0.6 + 0.8 * jitter);
     vec3 previous = origin;
-    vec3 point = origin + direction * stride * (0.5 + jitter);
+    vec3 point = origin + direction * stride;
     for (int i = 0; i < steps; i++) {
         vec4 clip = gbufferProjection * vec4(point, 1.0);
         if (clip.w <= 0.0) {
@@ -68,9 +71,15 @@ vec4 mx_reflect_scene(vec3 origin, vec3 direction, float jitter, int steps, floa
                     }
                 }
                 vec2 hit_uv = mx_project(far_end).xy;
-                vec2 margin = min(hit_uv, 1.0 - hit_uv);
-                float sure = smoothstep(0.0, 0.08, min(margin.x, margin.y));
-                return vec4(mx_to_linear(textureLod(colortex5, hit_uv, 0.0).rgb), sure);
+                float hit_depth = textureLod(depthtex1, hit_uv, 0.0).r;
+                // Only a real hit: the ray has to end on the surface, not pass far behind it. A long step let a
+                // ray that went behind a hill count as hitting it, which smeared copies of it across the water.
+                float behind = hit_depth < 1.0 ? mx_view_position(hit_uv, hit_depth).z - far_end.z : 1.0e9;
+                if (behind < 0.4 + 0.03 * -far_end.z) {
+                    vec2 margin = min(hit_uv, 1.0 - hit_uv);
+                    float sure = smoothstep(0.0, 0.08, min(margin.x, margin.y));
+                    return vec4(mx_to_linear(textureLod(colortex5, hit_uv, 0.0).rgb), sure);
+                }
             }
         }
         previous = point;
