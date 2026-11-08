@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 import nbt
 from nbt import Tag
 
-SAVES = os.path.expanduser('~/Library/Application Support/PrismLauncher/instances/26.3/minecraft/saves')
+SAVES = os.environ.get('LAB_SAVES') or os.path.expanduser('~/Library/Application Support/ModrinthApp/profiles/26.3 Fabric/saves')
 SRC, DST = os.path.join(SAVES, sys.argv[1] if len(sys.argv) > 1 else '5'), os.path.join(SAVES, 'oh-shiny-scene')
 assert not os.path.exists(DST) or os.path.exists(os.path.join(DST, '.lab')), 'refusing to overwrite'
 shutil.rmtree(DST, ignore_errors=True)
